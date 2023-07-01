@@ -1,6 +1,9 @@
 # UnbelievaBoat API Python Wrapper
 
-[![Python Version](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/release/python-380/)
+[![Discord Server](https://img.shields.io/discord/746360067632136222?label=discord&style=for-the-badge&logo=discord&color=5865F2&logoColor=white)](https://discord.gg/yoggies)
+[![Python Version](https://img.shields.io/badge/python-3.8+-blue.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/downloads/release/python-380/)
+[![PyPI Version](https://img.shields.io/pypi/v/unbelievaboat.svg?style=for-the-badge&logo=pypi&logoColor=white)](https://pypi.org/project/unbelievaboat/)
+
 
 This is a Python wrapper for the UnbelievaBoat API, which provides access to the UnbelievaBoat Discord bot functionality. It allows you to interact with the API endpoints to retrieve guild information, user balances, leaderboard data, and more.
 
