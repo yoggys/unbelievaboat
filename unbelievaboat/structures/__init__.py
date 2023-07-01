@@ -1,7 +1,8 @@
 from .Guild import Guild
 from .Leaderboard import Leaderboard
 from .Permission import Permission
-from .User import User
+from .UserBalance import UserBalance
+from .UserInventory import UserInventory
 from .Store import Store
 
 from .items import *
@@ -9,9 +10,10 @@ from .items import *
 __all__ = [
     "Guild",
     "Permission",
-    "User",
+    "UserBalance",
     "Leaderboard",
     "Store",
+    "UserInventory",
     "BaseItem",
     "InventoryItem",
     "StoreItem",

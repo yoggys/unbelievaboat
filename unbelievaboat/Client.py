@@ -3,7 +3,16 @@ from typing import Any, Dict, List, Union
 import aiohttp
 
 from .RequestHandler import RequestHandler
-from .structures import Guild, Leaderboard, Permission, Store, StoreItem, User
+from .structures import (
+    Guild,
+    UserInventory,
+    InventoryItem,
+    Leaderboard,
+    Permission,
+    Store,
+    StoreItem,
+    UserBalance,
+)
 from .util import to_snake_case_deep
 
 
@@ -46,94 +55,89 @@ class Client:
             response.raise_for_status()
             return await response.json()
 
-    async def get_user_balance(self, guild_id: int, user_id: int) -> User:
+    async def get_user_balance(self, guild_id: int, user_id: int) -> UserBalance:
         endpoint: str = f"guilds/{guild_id}/users/{user_id}"
-        data: Dict[str, Any] = await self._request_handler.request("GET", endpoint)
-        data["guild_id"] = guild_id
-        return User(self, data)
+        response: Dict[str, Any] = await self._request_handler.request("GET", endpoint)
+        response["guild_id"] = guild_id
+        return UserBalance(self, response)
 
     async def set_user_balance(
         self, guild_id: int, user_id: int, data: Dict[str, Any] = {}, reason: str = None
-    ) -> User:
+    ) -> UserBalance:
         endpoint: str = f"guilds/{guild_id}/users/{user_id}"
         payload: Dict[str, Any] = {
             "cash": data.get("cash"),
             "bank": data.get("bank"),
             "reason": reason,
         }
-        data: Dict[str, Any] = await self._request_handler.request(
+        response: Dict[str, Any] = await self._request_handler.request(
             "PUT", endpoint, data=payload
         )
-        data["guild_id"] = guild_id
-        return User(self, data)
+        response["guild_id"] = guild_id
+        return UserBalance(self, response)
 
     async def edit_user_balance(
         self, guild_id: int, user_id: int, data: Dict[str, Any] = {}, reason: str = None
-    ) -> User:
+    ) -> UserBalance:
         endpoint: str = f"guilds/{guild_id}/users/{user_id}"
         payload: Dict[str, Any] = {
             "cash": data.get("cash"),
             "bank": data.get("bank"),
             "reason": reason,
         }
-        data: Dict[str, Any] = await self._request_handler.request(
+        response: Dict[str, Any] = await self._request_handler.request(
             "PATCH", endpoint, data=payload
         )
-        data["guild_id"] = guild_id
-        return User(self, data)
+        response["guild_id"] = guild_id
+        return UserBalance(self, response)
 
     async def get_guild_leaderboard(
         self, guild_id: int, params: Dict[str, Any] = {}
-    ) -> Dict[str, Union[List[User], int]]:
+    ) -> Dict[str, Union[List[UserBalance], int]]:
         endpoint: str = f"guilds/{guild_id}/users"
-        data: Dict[str, Any] = await self._request_handler.request(
+        response: Dict[str, Any] = await self._request_handler.request(
             "GET", endpoint, params=params
         )
 
-        return Leaderboard(
-            {
-                "guild_id": guild_id,
-                "page": params.get("page", 1),
-                "total_pages": data.get("total_pages", 1)
-                if "total_pages" in data
-                else 1,
-                "users": data["users"] if "users" in data else data,
-            }
-        )
+        data: Dict[str, Any] = {
+            "guild_id": guild_id,
+            "users": response.get("users", []) if "users" in response else response,
+            "page": response.get("page", 1) if "page" in response else 1,
+            "total_pages": response.get("total_pages", 1)
+            if "total_pages" in response
+            else 1,
+        }
+
+        return Leaderboard(response)
 
     async def get_guild(self, guild_id: int) -> Guild:
         endpoint: str = f"guilds/{guild_id}"
-        data: Dict[str, Any] = await self._request_handler.request("GET", endpoint)
-        return Guild(data)
+        response: Dict[str, Any] = await self._request_handler.request("GET", endpoint)
+        return Guild(response)
 
     async def get_application_permission(self, guild_id: int) -> Permission:
         endpoint: str = f"applications/@me/guilds/{guild_id}"
-        data: Dict[str, Any] = await self._request_handler.request("GET", endpoint)
-        return Permission(data["permissions"])
+        response: Dict[str, Any] = await self._request_handler.request("GET", endpoint)
+        return Permission(response["permissions"])
 
-    async def get_items(self, guild_id: int, params: Dict[str, Any] = None) -> Store:
+    async def get_store_items(
+        self, guild_id: int, params: Dict[str, Any] = None
+    ) -> Store:
         endpoint: str = f"guilds/{guild_id}/items"
-        data: Dict[str, Any] = await self._request_handler.request(
+        response: Dict[str, Any] = await self._request_handler.request(
             "GET", endpoint, params=params
         )
+        response["guild_id"] = guild_id
 
-        return Store(
-            self,
-            {
-                "guild_id": guild_id,
-                "page": data["page"],
-                "totalPages": data["total_pages"],
-                "items": data["items"],
-            },
-        )
+        return Store(self, response)
 
-    async def get_item(self, guild_id: int, item_id: int) -> StoreItem:
+    async def get_store_item(self, guild_id: int, item_id: int) -> StoreItem:
         endpoint: str = f"guilds/{guild_id}/items/{item_id}"
-        data: Dict[str, Any] = await self._request_handler.request("GET", endpoint)
-        data["guild_id"] = guild_id
-        return StoreItem(self, data)
+        response: Dict[str, Any] = await self._request_handler.request("GET", endpoint)
+        response["guild_id"] = guild_id
+        return StoreItem(self, response)
 
-    async def edit_item(
+    async def edit_store_item(
         self,
         guild_id: int,
         item_id: int,
@@ -147,3 +151,62 @@ class Client:
         )
         response["guild_id"] = guild_id
         return StoreItem(self, response)
+
+    async def delete_store_item(
+        self,
+        guild_id: int,
+        item_id: int,
+        cascade: bool = False,
+    ) -> None:
+        endpoint: str = f"guilds/{guild_id}/items/{item_id}"
+        params: Dict[str, Any] = {"cascade": cascade}
+        await self._request_handler.request("DELETE", endpoint, params=params)
+
+    async def get_inventory_items(
+        self, guild_id: int, user_id: int, params: Dict[str, Any] = None
+    ) -> UserInventory:
+        endpoint: str = f"guilds/{guild_id}/users/{user_id}/inventory"
+        response: Dict[str, Any] = await self._request_handler.request(
+            "GET", endpoint, params=params
+        )
+        response["guild_id"] = guild_id
+        response["user_id"] = user_id
+        return UserInventory(self, response)
+
+    async def get_inventory_item(
+        self, guild_id: int, user_id: int, item_id: int
+    ) -> InventoryItem:
+        endpoint: str = f"guilds/{guild_id}/users/{user_id}/inventory/{item_id}"
+        response: Dict[str, Any] = await self._request_handler.request("GET", endpoint)
+        response["guild_id"] = guild_id
+        response["user_id"] = user_id
+        return InventoryItem(self, response)
+
+    async def add_inventory_item(
+        self,
+        guild_id: int,
+        user_id: int,
+        data: Dict[str, Any],
+    ) -> InventoryItem:
+        endpoint: str = f"guilds/{guild_id}/users/{user_id}/inventory"
+        payload: Dict[str, Any] = {
+            "item_id": data.get("item_id"),
+            "quantity": data.get("quantity"),
+        }
+        response: Dict[str, Any] = await self._request_handler.request(
+            "POST", endpoint, data=payload
+        )
+        response["guild_id"] = guild_id
+        response["user_id"] = user_id
+        return InventoryItem(self, response)
+
+    async def delete_inventory_item(
+        self,
+        guild_id: int,
+        user_id: int,
+        item_id: int,
+        quantity: int = 1,
+    ) -> None:
+        endpoint: str = f"guilds/{guild_id}/users/{user_id}/inventory/{item_id}"
+        params: Dict[str, Any] = {"quantity": quantity}
+        await self._request_handler.request("DELETE", endpoint, params=params)

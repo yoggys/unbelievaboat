@@ -1,3 +1,4 @@
+import json
 from typing import Any, Dict, Optional
 
 from .errors import APIError, HTTPError
@@ -49,7 +50,10 @@ class RequestHandler:
                 self.parse_rate_limit_headers(route, response.headers)
 
                 if response.status >= 200 and response.status < 300:
-                    return await response.json()
+                    try:
+                        return await response.json()
+                    except:
+                        return json.dumps(await response.text())
 
                 if response.status == 429:
                     if _attempts >= self._client._max_retries:
@@ -57,7 +61,7 @@ class RequestHandler:
                     else:
                         await self.request(method, endpoint, data, params, _attempts)
 
-                raise HTTPError(response)
+                raise HTTPError(response.status, await response.json())
 
     def get_route(self, method: str, endpoint: str) -> str:
         import re

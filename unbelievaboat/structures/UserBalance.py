@@ -1,7 +1,7 @@
 from typing import Any, Dict, Optional, Self
 
 
-class User:
+class UserBalance:
     def __init__(self, client, data: Dict[str, Any] = {}) -> None:
         self.guild_id: str = data.get("guild_id")
         self.user_id: str = data.get("user_id")
@@ -14,8 +14,10 @@ class User:
         self._raw_data: Dict[str, Any] = data
 
     def __str__(self) -> str:
-        return "<User id={} guild_id={} rank={} cash={} bank={} total={}>".format(
-            self.id, self.guild_id, self.rank, self.cash, self.bank, self.total
+        return (
+            "<UserBalance id={} guild_id={} rank={} cash={} bank={} total={}>".format(
+                self.id, self.guild_id, self.rank, self.cash, self.bank, self.total
+            )
         )
 
     @property

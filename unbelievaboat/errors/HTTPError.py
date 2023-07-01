@@ -1,16 +1,14 @@
+from typing import Any, Dict
+
 import aiohttp
 
 
 class HTTPError(Exception):
-    def __init__(self, response: aiohttp.ClientResponse) -> None:
+    def __init__(self, status: int, data: Dict[str, Any], response: aiohttp.ClientResponse) -> None:
         super().__init__(response)
         self.name: str = self.__class__.__name__
-        self.status: int = response.status
-        self.message: str = (
-            response.status_text
-            if hasattr(response, "status_text")
-            else "Unknown error"
-        )
+        self.status: int = status
+        self.message: str = data.get("message") or "Unknown error"
 
         self.response: aiohttp.ClientResponse = response
 

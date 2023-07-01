@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import List
 
 from .items import StoreItem
 
@@ -6,7 +6,7 @@ from .items import StoreItem
 class Store:
     def __init__(self, client, data: dict = {}) -> None:
         self.guild_id: str = data.get("guild_id")
-        self.items = [
+        self.items: List[StoreItem] = [
             StoreItem(client, {**item, "guild_id": self.guild_id})
             for item in data.get("items", [])
         ]

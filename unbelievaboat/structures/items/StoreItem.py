@@ -35,5 +35,8 @@ class StoreItem(BaseItem):
     async def edit(
         self, data: Dict[str, Any] = {}, params: Dict[str, Any] = {}
     ) -> Self:
-        self = await self._client.edit_item(self.guild_id, self.id, data, params)
+        self = await self._client.edit_store_item(self.guild_id, self.id, data, params)
         return self
+
+    async def delete(self, cascade: bool = False) -> None:
+        self = await self._client.delete_item(self.guild_id, self.id, cascade)
