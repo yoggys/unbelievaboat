@@ -1,10 +1,10 @@
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 from ...util.Constants import ItemActionType
 
 
 class StoreItemAction:
-    def __init__(self, data: dict) -> None:
+    def __init__(self, data: Dict[str, Any]) -> None:
         self.type: ItemActionType = ItemActionType(data["type"])
 
         if self.type == ItemActionType.RESPOND:

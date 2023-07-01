@@ -1,11 +1,11 @@
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 from .StoreItemAction import StoreItemAction
 from .StoreItemRequirement import StoreItemRequirement
 
 
 class BaseItem:
-    def __init__(self, data: dict) -> None:
+    def __init__(self, data: Dict[str, Any]) -> None:
         self.name: str = data["name"]
         self.description: Optional[str] = data.get("description", None)
         self.is_usable: bool = data["is_usable"]

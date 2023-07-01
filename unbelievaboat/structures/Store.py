@@ -4,11 +4,14 @@ from .items import StoreItem
 
 
 class Store:
-    def __init__(self, data: dict = {}) -> None:
-        self.guild_id: Optional[str] = data.get("guild_id")
-        self.items = [StoreItem(item) for item in data.get("items", [])]
-        self.total_pages: Optional[int] = data.get("total_pages", 1)
-        self.page: Optional[int] = data.get("page", 1)
+    def __init__(self, client, data: dict = {}) -> None:
+        self.guild_id: str = data.get("guild_id")
+        self.items = [
+            StoreItem(client, {**item, "guild_id": self.guild_id})
+            for item in data.get("items", [])
+        ]
+        self.total_pages: int = data.get("total_pages", 1)
+        self.page: int = data.get("page", 1)
 
     def __str__(self) -> str:
         return "<Store guild_id={} items={} total_pages={} page={}>".format(

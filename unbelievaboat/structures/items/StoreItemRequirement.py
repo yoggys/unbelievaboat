@@ -1,10 +1,10 @@
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 from ...util.Constants import ItemRequirementMatchType, ItemRequirementType
 
 
 class StoreItemRequirement:
-    def __init__(self, data: dict) -> None:
+    def __init__(self, data: Dict[str, Any]) -> None:
         self.type: ItemRequirementType = ItemRequirementType(data["type"])
 
         if self.type in [ItemRequirementType.ROLE, ItemRequirementType.ITEM]:

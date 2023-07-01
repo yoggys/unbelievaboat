@@ -7,6 +7,9 @@ class Permission:
     def __init__(self, allow: int) -> None:
         self.allow: int = allow
 
+    def __str__(self) -> str:
+        return "<Permission allow={}>".format(self.allow)
+
     @property
     def json(self) -> Dict[str, bool]:
         json: Dict[str, bool] = {}
@@ -24,6 +27,3 @@ class Permission:
             )
         else:
             return bool(self.allow & getattr(self.__class__, permissions))
-
-    def __str__(self) -> str:
-        return "<Permission allow={}>".format(self.allow)

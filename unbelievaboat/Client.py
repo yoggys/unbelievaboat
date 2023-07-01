@@ -49,7 +49,8 @@ class Client:
     async def get_user_balance(self, guild_id: int, user_id: int) -> User:
         endpoint: str = f"guilds/{guild_id}/users/{user_id}"
         data: Dict[str, Any] = await self._request_handler.request("GET", endpoint)
-        return User(data)
+        data["guild_id"] = guild_id
+        return User(self, data)
 
     async def set_user_balance(
         self, guild_id: int, user_id: int, data: Dict[str, Any] = {}, reason: str = None
@@ -63,7 +64,8 @@ class Client:
         data: Dict[str, Any] = await self._request_handler.request(
             "PUT", endpoint, data=payload
         )
-        return User(data)
+        data["guild_id"] = guild_id
+        return User(self, data)
 
     async def edit_user_balance(
         self, guild_id: int, user_id: int, data: Dict[str, Any] = {}, reason: str = None
@@ -77,7 +79,8 @@ class Client:
         data: Dict[str, Any] = await self._request_handler.request(
             "PATCH", endpoint, data=payload
         )
-        return User(data)
+        data["guild_id"] = guild_id
+        return User(self, data)
 
     async def get_guild_leaderboard(
         self, guild_id: int, params: Dict[str, Any] = {}
@@ -108,27 +111,27 @@ class Client:
         data: Dict[str, Any] = await self._request_handler.request("GET", endpoint)
         return Permission(data["permissions"])
 
-    async def get_items(
-        self, guild_id: int, params: Dict[str, Any] = None
-    ) -> Dict[str, Union[int, List[StoreItem]]]:
+    async def get_items(self, guild_id: int, params: Dict[str, Any] = None) -> Store:
         endpoint: str = f"guilds/{guild_id}/items"
         data: Dict[str, Any] = await self._request_handler.request(
             "GET", endpoint, params=params
         )
 
         return Store(
+            self,
             {
                 "guild_id": guild_id,
                 "page": data["page"],
                 "totalPages": data["total_pages"],
                 "items": data["items"],
-            }
+            },
         )
 
     async def get_item(self, guild_id: int, item_id: int) -> StoreItem:
         endpoint: str = f"guilds/{guild_id}/items/{item_id}"
         data: Dict[str, Any] = await self._request_handler.request("GET", endpoint)
-        return StoreItem(data)
+        data["guild_id"] = guild_id
+        return StoreItem(self, data)
 
     async def edit_item(
         self,
@@ -142,5 +145,5 @@ class Client:
         response: Dict[str, Any] = await self._request_handler.request(
             "PATCH", endpoint, data=payload, params=params
         )
-
-        return StoreItem(response)
+        response["guild_id"] = guild_id
+        return StoreItem(self, response)
