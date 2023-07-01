@@ -1,6 +1,6 @@
-import time
 import asyncio
-from typing import Callable
+import time
+from typing import Any, Callable
 
 
 class Bucket(list):
@@ -12,13 +12,17 @@ class Bucket(list):
         self.reset: float = None
         self.semaphore = asyncio.Semaphore(limit)
 
-    def queue(self, request: Callable[[], None]) -> None:
-        self.append(request)
+    async def queue(self, request: Callable[[], None], *args, **kwargs) -> Any:
+        self.append({
+            "request": request,
+            "args": args,
+            "kwargs": kwargs
+        })
         if not self.processing:
             self.processing = True
-            self.execute()
+            return await self.execute()
 
-    async def execute(self) -> None:
+    async def execute(self) -> Any:
         if not self:
             self.processing = False
             return
@@ -29,12 +33,16 @@ class Bucket(list):
             self.remaining = self.limit
 
         if self.remaining <= 0:
-            self.processing = self.execute
+            self.processing = True
             time_to_wait: float = max(0, self.reset - now)
             await asyncio.sleep(time_to_wait)
-            return
+            self.processing = False
+            return await self.execute()
 
         self.remaining -= 1
 
-        request: Callable[[], None] = self.pop(0)
-        await request(self.execute)
+        entry: Callable[[], None] = self.pop(0)
+        result = await entry["request"](*entry["args"], **entry["kwargs"])
+        self.processing = False
+        return result
+

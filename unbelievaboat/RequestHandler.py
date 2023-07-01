@@ -1,4 +1,5 @@
 import json
+import time
 from typing import Any, Dict, Optional
 
 from .errors import APIError, HTTPError
@@ -25,6 +26,18 @@ class RequestHandler:
         if route not in self.ratelimits:
             self.ratelimits[route] = Bucket()
 
+        return await self.ratelimits[route].queue(self.execute_request, route, method, endpoint, data, params, _attempts)
+        # await self.ratelimits[route].execute()
+
+    async def execute_request(
+        self,
+        route: str,
+        method: str,
+        endpoint: str,
+        data: Optional[Dict[str, Any]] = None,
+        params: Optional[Dict[str, Any]] = None,
+        _attempts: int = 0,
+    ):
         async with self.ratelimits[route].semaphore:
             url = "{}/{}/{}".format(
                 self._client.base_url, self._client.version, endpoint
@@ -57,11 +70,11 @@ class RequestHandler:
 
                 if response.status == 429:
                     if _attempts >= self._client._max_retries:
-                        raise APIError(response)
+                        raise APIError(await response.json(), response)
                     else:
                         await self.request(method, endpoint, data, params, _attempts)
 
-                raise HTTPError(response.status, await response.json())
+                raise HTTPError(await response.json(), response)
 
     def get_route(self, method: str, endpoint: str) -> str:
         import re
@@ -77,10 +90,6 @@ class RequestHandler:
         return f"{method}/{route}"
 
     def parse_rate_limit_headers(self, route: str, headers: Dict[str, str]) -> None:
-        import time
-
-        now = time.time()
-
         self.ratelimits[route].limit = int(headers.get("x-ratelimit-limit", 0))
 
         remaining = headers.get("x-ratelimit-remaining")
@@ -88,11 +97,12 @@ class RequestHandler:
             int(remaining) if remaining is not None else 1
         )
 
+        now = time.time()
         retry_after = headers.get("retry-after")
         if retry_after:
-            self.ratelimits[route].reset = int(retry_after) + now
+            self.ratelimits[route].reset = float(retry_after) + now
         else:
             reset_time = headers.get("x-ratelimit-reset")
             self.ratelimits[route].reset = (
-                max(int(reset_time), now) if reset_time else now
+                max(int(reset_time)/1000, now) if reset_time else now
             )

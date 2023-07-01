@@ -31,7 +31,9 @@ class UserInventory:
     ) -> Self:
         item_id = item if isinstance(item, str) else item.id
         data: Dict[str, any] = {"item_id": item_id, "quantity": quantity}
-        added_item = await self._client.add_inventory_item(self.guild_id, self.user_id, data)
+        added_item = await self._client.add_inventory_item(
+            self.guild_id, self.user_id, data
+        )
         for item in self.items:
             if item.id == added_item.id:
                 item = added_item
