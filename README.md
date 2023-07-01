@@ -4,7 +4,6 @@
 [![Python Version](https://img.shields.io/badge/python-3.8+-blue.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/downloads/release/python-380/)
 [![PyPI Version](https://img.shields.io/pypi/v/unbelievaboat.svg?style=for-the-badge&logo=pypi&logoColor=white)](https://pypi.org/project/unbelievaboat/)
 
-
 This is a Python wrapper for the UnbelievaBoat API, which provides access to the UnbelievaBoat Discord bot functionality. It allows you to interact with the API endpoints to retrieve guild information, user balances, leaderboard data, and more.
 
 ## Requirements
@@ -37,8 +36,24 @@ async def main():
     print(guild)
 
     # Retrieve user balance
-    user_balance = await client.get_user_balance(guild_id, user_id)
-    print(user_balance)
+    user = await client.get_user_balance(guild_id, user_id)
+    print(user.total)
+
+    # Set or update user balance
+    user = await client.set_user_balance(guild_id, user_id, {"bank": 100})
+    user = await client.update_user_balance(guild_id, user_id, {"bank": 100})
+    # or
+    user = await client.get_user_balance(guild_id, user_id)
+    user = await user.set_balance({"bank": 100})
+    user = await user.update_balance({"bank": 100})
+
+    # Retrieve leaderboard data
+    leaderboard = await client.get_leaderboard(guild_id)
+    print(leaderboard.users)
+
+    # Retrieve item shop data
+    shop = await client.get_shop(guild_id)
+    print(shop.items)
 
     # Close the client session
     await client.close()

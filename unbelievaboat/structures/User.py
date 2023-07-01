@@ -28,7 +28,9 @@ class User:
         )
         return self
 
-    async def edit_balance(self, data: Dict[str, Any] = {}, reason: str = None) -> Self:
+    async def update_balance(
+        self, data: Dict[str, Any] = {}, reason: str = None
+    ) -> Self:
         self = await self._client.edit_user_balance(
             self.guild_id, self.user_id, data, reason
         )
