@@ -1,15 +1,14 @@
-import json
+import asyncio
 import time
 from typing import Any, Dict, Optional
 
 from .errors import APIError, HTTPError
-from .util import Bucket
 
 
 class RequestHandler:
     def __init__(self, client) -> None:
         self._client = client
-        self.ratelimits: Dict[str, Bucket] = {}
+        self.locks: Dict[str, asyncio.Lock] = {}
 
     def __str__(self) -> str:
         return "<RequestHandler>"
@@ -23,11 +22,12 @@ class RequestHandler:
         _attempts: int = 0,
     ) -> Any:
         route = self.get_route(method, endpoint)
-        if route not in self.ratelimits:
-            self.ratelimits[route] = Bucket()
+        if route not in self.locks:
+            self.locks[route] = asyncio.Lock()
 
-        return await self.ratelimits[route].queue(self.execute_request, route, method, endpoint, data, params, _attempts)
-        # await self.ratelimits[route].execute()
+        return await self.execute_request(
+            route, method, endpoint, data, params, _attempts
+        )
 
     async def execute_request(
         self,
@@ -38,7 +38,7 @@ class RequestHandler:
         params: Optional[Dict[str, Any]] = None,
         _attempts: int = 0,
     ):
-        async with self.ratelimits[route].semaphore:
+        async with self.locks[route]:
             url = "{}/{}/{}".format(
                 self._client.base_url, self._client.version, endpoint
             )
@@ -56,17 +56,16 @@ class RequestHandler:
             async with self._client._session.request(
                 **options
             ) as response:  # type: ClientResponse
-                # Increase the number of attempts
                 _attempts += 1
 
-                # Add the rate limit header data to the bucket
-                self.parse_rate_limit_headers(route, response.headers)
+                # Handle rate limits
+                await self.parse_rate_limit_headers(response.headers)
 
                 if response.status >= 200 and response.status < 300:
                     try:
                         return await response.json()
-                    except:
-                        return json.dumps(await response.text())
+                    except Exception as e:
+                        return await response.text()
 
                 if response.status == 429:
                     if _attempts >= self._client._max_retries:
@@ -89,20 +88,14 @@ class RequestHandler:
         )
         return f"{method}/{route}"
 
-    def parse_rate_limit_headers(self, route: str, headers: Dict[str, str]) -> None:
-        self.ratelimits[route].limit = int(headers.get("x-ratelimit-limit", 0))
-
-        remaining = headers.get("x-ratelimit-remaining")
-        self.ratelimits[route].remaining = (
-            int(remaining) if remaining is not None else 1
-        )
-
-        now = time.time()
-        retry_after = headers.get("retry-after")
-        if retry_after:
-            self.ratelimits[route].reset = float(retry_after) + now
-        else:
-            reset_time = headers.get("x-ratelimit-reset")
-            self.ratelimits[route].reset = (
-                max(int(reset_time)/1000, now) if reset_time else now
-            )
+    async def parse_rate_limit_headers(self, headers: Dict[str, str]) -> None:
+        remaining = int(headers.get("x-ratelimit-remaining", 0))
+        if remaining <= 0:
+            if headers.get("retry-after"):
+                retry_after = float(headers.get("retry-after", 0)) / 1000
+                await asyncio.sleep(retry_after)
+            else:
+                reset_after = (
+                    float(headers.get("x-ratelimit-reset", 0)) / 1000 - time.time()
+                )
+                await asyncio.sleep(reset_after)
