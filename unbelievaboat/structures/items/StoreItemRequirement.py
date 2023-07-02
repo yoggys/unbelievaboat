@@ -27,6 +27,12 @@ class StoreItemRequirement:
         return json
 
     def __str__(self) -> str:
-        return "<StoreItemRequirement type={} matchType={} ids={} balance={}>".format(
-            self.type, self.matchType, self.ids, self.balance
-        )
+        if hasattr(self, "matchType"):
+            return "<StoreItemRequirement type={} matchType={} ids={}>".format(
+                self.type, self.matchType, self.ids
+            )
+
+        if hasattr(self, "ids"):
+            return "<StoreItemRequirement type={} balance={}>".format(
+                self.type, self.balance
+            )

@@ -22,7 +22,7 @@ class StoreItem(BaseItem):
         self._client = client
 
     def __str__(self) -> str:
-        return "<StoreItem id={} guild_id={} price={} is_inventory={} stock_remaining={} unlimited_stock={} expires_at={}>".format(
+        return "<StoreItem id={} guild_id={} price={} is_inventory={} stock_remaining={} unlimited_stock={} expires_at={} actions={} requirements={}>".format(
             self.id,
             self.guild_id,
             self.price,
@@ -30,6 +30,8 @@ class StoreItem(BaseItem):
             self.stock_remaining,
             self.unlimited_stock,
             self.expires_at,
+            [str(a) for a in self.actions],
+            [str(r) for r in self.requirements],
         )
 
     async def edit(

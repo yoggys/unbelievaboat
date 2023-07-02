@@ -23,6 +23,15 @@ class StoreItemAction:
         return {"type": self.type.value, **self.__dict__}
 
     def __str__(self) -> str:
-        return "<StoreItemAction type={} message={} ids={} balance={}>".format(
-            self.type, self.message, self.ids, self.balance
-        )
+        if hasattr(self, "message"):
+            return "<StoreItemAction type={} message={}>".format(
+                self.type, self.message
+            )
+
+        if hasattr(self, "ids"):
+            return "<StoreItemAction type={} ids={}>".format(self.type, self.ids)
+
+        if hasattr(self, "balance"):
+            return "<StoreItemAction type={} balance={}>".format(
+                self.type, self.balance
+            )

@@ -14,8 +14,13 @@ class InventoryItem(BaseItem):
         self._client = client
 
     def __str__(self) -> str:
-        return "<InventoryItem item_id={} quantity={}>".format(
-            self.item_id, self.quantity
+        return "<InventoryItem item_id={} guild_id={} user_id={} quantity={} actions={} requirements={}>".format(
+            self.item_id,
+            self.guild_id,
+            self.user_id,
+            self.quantity,
+            [str(a) for a in self.actions],
+            [str(r) for r in self.requirements],
         )
 
     @property
