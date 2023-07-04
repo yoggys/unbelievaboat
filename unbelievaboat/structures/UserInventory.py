@@ -5,19 +5,20 @@ from .items import InventoryItem, StoreItem
 
 class UserInventory:
     def __init__(self, client, data: dict = {}) -> None:
+        self._client = client
         self.user_id: str = data.get("user_id")
         self.guild_id: str = data.get("guild_id")
+        self.total_pages: int = data.get("total_pages", 1)
+        self.page: int = data.get("page", 1)
         self.items: List[InventoryItem] = [
             InventoryItem(
                 client, {**item, "guild_id": self.guild_id, "user_id": self.user_id}
             )
             for item in data.get("items", [])
         ]
-        self.total_pages: int = data.get("total_pages", 1)
-        self.page: int = data.get("page", 1)
 
-        self._client = client
-
+        client.cache_user(self, "inventory")
+        
     def __str__(self) -> str:
         return "<UserInventory guild_id={} items={} total_pages={} page={}>".format(
             self.guild_id,

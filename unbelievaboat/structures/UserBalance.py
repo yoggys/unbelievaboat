@@ -12,6 +12,8 @@ class UserBalance:
 
         self._client = client
         self._raw_data: Dict[str, Any] = data
+        
+        client.cache_user(self, "balance")
 
     def __str__(self) -> str:
         return (

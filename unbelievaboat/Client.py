@@ -29,6 +29,8 @@ class Client:
 
         self._max_retries: int = options.get("maxRetries", 3)
         self._session: aiohttp.ClientSession = aiohttp.ClientSession()
+        
+        self._cache: Dict[int, Dict[int, Any]] = {}
 
         # Create an instance of the RequestHandler
         self._request_handler: RequestHandler = RequestHandler(self)
@@ -38,6 +40,17 @@ class Client:
 
     async def close(self) -> None:
         await self._session.close()
+
+    async def cache_user(self, user: Union[UserBalance, UserInventory], key: str):
+        guild_id: int = user.guild_id
+        user_id: int = user.user_id
+        
+        if guild_id not in self._cache:
+            self._cache[guild_id] = {}
+        if user_id not in self._cache[guild_id]:
+            self._cache[guild_id][user_id] = {}
+        self._cache[guild_id][user_id][key] = user
+        return user        
 
     async def _request(
         self,
@@ -59,6 +72,7 @@ class Client:
         endpoint: str = f"guilds/{guild_id}/users/{user_id}"
         response: Dict[str, Any] = await self._request_handler.request("GET", endpoint)
         response["guild_id"] = guild_id
+        
         return UserBalance(self, response)
 
     async def set_user_balance(
@@ -74,6 +88,7 @@ class Client:
             "PUT", endpoint, data=payload
         )
         response["guild_id"] = guild_id
+        
         return UserBalance(self, response)
 
     async def edit_user_balance(
@@ -89,6 +104,7 @@ class Client:
             "PATCH", endpoint, data=payload
         )
         response["guild_id"] = guild_id
+        
         return UserBalance(self, response)
 
     async def get_guild_leaderboard(
@@ -108,7 +124,7 @@ class Client:
             else 1,
         }
 
-        return Leaderboard(response)
+        return Leaderboard(data)
 
     async def get_guild(self, guild_id: int) -> Guild:
         endpoint: str = f"guilds/{guild_id}"
