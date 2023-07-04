@@ -108,7 +108,7 @@ class Client:
             else 1,
         }
 
-        return Leaderboard(response)
+        return Leaderboard(data)
 
     async def get_guild(self, guild_id: int) -> Guild:
         endpoint: str = f"guilds/{guild_id}"
