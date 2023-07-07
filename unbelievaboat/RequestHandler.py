@@ -105,9 +105,9 @@ class RequestHandler:
                 self.handle_ratelimit(route, response)
 
                 if response.status >= 200 and response.status < 300:
-                    try:
+                    if response.content_type == "application/json":
                         return await response.json()
-                    except Exception as e:
+                    else:
                         return await response.text()
 
                 if response.status == 429:

@@ -8,12 +8,13 @@ async def main():
     guild_id = ...
     user_id = ...
 
-    user = await client.get_user_balance(guild_id, user_id)
+    # Get user balance
+    balance = await client.get_user_balance(guild_id, user_id)
+    print(balance.total)
 
-    print(user.id)
-    print(user.bank)
-    print(user.cash)
-    print(user.total)
+    # Clear user balance
+    balance = await balance.clear_balance()
+    print(balance.total)
 
     await client.close()
 

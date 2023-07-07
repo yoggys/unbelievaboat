@@ -33,7 +33,13 @@ class UserBalance:
     async def update_balance(
         self, data: Dict[str, Any] = {}, reason: str = None
     ) -> Self:
-        self = await self._client.edit_user_balance(
+        self = await self._client.update_user_balance(
             self.guild_id, self.user_id, data, reason
+        )
+        return self
+
+    async def clear_balance(self, reason: str = None) -> Self:
+        self = await self._client.set_user_balance(
+            self.guild_id, self.user_id, {"cash": 0, "bank": 0}, reason
         )
         return self

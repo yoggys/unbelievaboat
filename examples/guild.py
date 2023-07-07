@@ -7,6 +7,7 @@ async def main():
 
     guild_id = ...
 
+    # Get guild information
     guild = await client.get_guild(guild_id)
 
     print(guild.id)

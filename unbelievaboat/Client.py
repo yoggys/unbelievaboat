@@ -76,7 +76,7 @@ class Client:
         response["guild_id"] = guild_id
         return UserBalance(self, response)
 
-    async def edit_user_balance(
+    async def update_user_balance(
         self, guild_id: int, user_id: int, data: Dict[str, Any] = {}, reason: str = None
     ) -> UserBalance:
         endpoint: str = f"guilds/{guild_id}/users/{user_id}"
@@ -93,22 +93,23 @@ class Client:
 
     async def get_guild_leaderboard(
         self, guild_id: int, params: Dict[str, Any] = {}
-    ) -> Dict[str, Union[List[UserBalance], int]]:
+    ) -> Leaderboard:
         endpoint: str = f"guilds/{guild_id}/users"
         response: Dict[str, Any] = await self._request_handler.request(
             "GET", endpoint, params=params
         )
-
+        
         data: Dict[str, Any] = {
             "guild_id": guild_id,
-            "users": response.get("users", []) if "users" in response else response,
-            "page": response.get("page", 1) if "page" in response else 1,
-            "total_pages": response.get("total_pages", 1)
-            if "total_pages" in response
-            else 1,
         }
-
-        return Leaderboard(data)
+        
+        if isinstance(response, list):
+            data["users"] = response
+        else:
+            data.update(**{            "users": response.get("users", []),
+            "page": params.get("page", 1),
+            "total_pages": response.get("total_pages", 1)})
+        return Leaderboard(self, data)
 
     async def get_guild(self, guild_id: int) -> Guild:
         endpoint: str = f"guilds/{guild_id}"
@@ -128,7 +129,6 @@ class Client:
             "GET", endpoint, params=params
         )
         response["guild_id"] = guild_id
-
         return Store(self, response)
 
     async def get_store_item(self, guild_id: int, item_id: int) -> StoreItem:

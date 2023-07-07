@@ -1,4 +1,5 @@
-from typing import List, Self, Dict, Union
+import asyncio
+from typing import Dict, List, Optional, Self, Union
 
 from .items import InventoryItem, StoreItem
 
@@ -13,8 +14,8 @@ class UserInventory:
             )
             for item in data.get("items", [])
         ]
-        self.total_pages: int = data.get("total_pages", 1)
-        self.page: int = data.get("page", 1)
+        self.total_pages: Optional[int] = data.get("total_pages")
+        self.page: Optional[int] = data.get("page")
 
         self._client = client
 
@@ -56,5 +57,13 @@ class UserInventory:
                 else:
                     item.quantity -= quantity
                 break
+
+        return self
+
+    async def clear_items(self) -> Self:
+        await asyncio.gather(
+            *[self.remove_item(item, item.quantity) for item in self.items]
+        )
+        self.items.clear()
 
         return self

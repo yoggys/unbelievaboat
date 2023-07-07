@@ -7,6 +7,7 @@ async def main():
 
     guild_id = ...
 
+    # Get guild permissions
     permissions = await client.get_application_permission(guild_id)
     print(permissions.allow)
 
