@@ -114,8 +114,10 @@ class Client:
                 }
             )
         return Leaderboard(self, data)
-    
-    async def get_guild_leaderboard_all(self, guild_id: int, params: Dict[str, Any] = {}) -> Leaderboard:
+
+    async def get_guild_leaderboard_all(
+        self, guild_id: int, params: Dict[str, Any] = {}
+    ) -> Leaderboard:
         params["limit"] = 2147483647
         return await self.get_guild_leaderboard(guild_id, params)
 
@@ -138,8 +140,10 @@ class Client:
         )
         response["guild_id"] = guild_id
         return Store(self, response)
-    
-    async def get_store_items_all(self, guild_id: int, params: Dict[str, Any] = {}) -> Store:
+
+    async def get_store_items_all(
+        self, guild_id: int, params: Dict[str, Any] = {}
+    ) -> Store:
         params["limit"] = 2147483647
         return await self.get_store_items(guild_id, params)
 
@@ -184,8 +188,10 @@ class Client:
         response["guild_id"] = guild_id
         response["user_id"] = user_id
         return UserInventory(self, response)
-    
-    async def get_inventory_items_all(self, guild_id: int, user_id: int, params: Dict[str, Any] = {}) -> UserInventory:
+
+    async def get_inventory_items_all(
+        self, guild_id: int, user_id: int, params: Dict[str, Any] = {}
+    ) -> UserInventory:
         params["limit"] = 2147483647
         return await self.get_inventory_items(guild_id, user_id, params)
 
