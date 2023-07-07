@@ -10,17 +10,13 @@ class Leaderboard:
             UserBalance(client, {**user, "guild_id": self.guild_id})
             for user in data.get("users", [])
         ]
-        self.total_pages: Optional[int] = data.get("total_pages")
-        self.page: Optional[int] = data.get("page")
+        self.total_pages: int = data.get("total_pages", 1)
+        self.page: int = data.get("page", 1)
 
     def __str__(self) -> str:
-        if self.total_pages:
-            return "<Leaderboard guild_id={} users={} total_pages={} page={}>".format(
-                self.guild_id,
-                [str(user) for user in self.users],
-                self.total_pages,
-                self.page,
-            )
-        return "<Leaderboard guild_id={} users={}>".format(
-            self.guild_id, [str(user) for user in self.users]
+        return "<Leaderboard guild_id={} users={} total_pages={} page={}>".format(
+            self.guild_id,
+            [str(user) for user in self.users],
+            self.total_pages,
+            self.page,
         )

@@ -14,8 +14,8 @@ class UserInventory:
             )
             for item in data.get("items", [])
         ]
-        self.total_pages: Optional[int] = data.get("total_pages")
-        self.page: Optional[int] = data.get("page")
+        self.total_pages: int = data.get("total_pages", 1)
+        self.page: int = data.get("page", 1)
 
         self._client = client
 
