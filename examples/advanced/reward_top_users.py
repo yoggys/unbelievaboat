@@ -10,6 +10,9 @@ async def main():
 
     # Fetch guild leaderboard, by default it will fetch 1000 users
     leaderboard = await client.get_guild_leaderboard(guild_id)  # {"limit": ...}
+    
+    # Or fetch whole leaderboard 
+    leaderboard = await client.get_guild_leaderboard_all(guild_id)
 
     # Add items to the leaderboard users
     tasks = [
