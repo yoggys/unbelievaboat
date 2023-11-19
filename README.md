@@ -1,6 +1,6 @@
 # UnbelievaBoat API Python Wrapper
 
-[![Discord Server](https://img.shields.io/discord/746360067632136222?label=discord&style=for-the-badge&logo=discord&color=5865F2&logoColor=white)](https://discord.gg/yoggies)
+[![Discord Server](https://img.shields.io/discord/746360067632136222?label=discord&style=for-the-badge&logo=discord&color=5865F2&logoColor=white)](https://dc.yoggies.dev/)
 [![Python Version](https://img.shields.io/badge/python-3.8+-blue.svg?style=for-the-badge&logo=python&logoColor=white)](https://www.python.org/downloads/release/python-380/)
 [![PyPI Version](https://img.shields.io/pypi/v/unbelievaboat.svg?style=for-the-badge&color=yellowgreen&logo=pypi&logoColor=white)](https://pypi.org/project/unbelievaboat/)
 [![PyPI Downloads](https://img.shields.io/pypi/dm/unbelievaboat?style=for-the-badge&color=blueviolet&logo=pypi&logoColor=white)](https://pypi.org/project/unbelievaboat/)
