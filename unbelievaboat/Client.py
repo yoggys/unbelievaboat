@@ -21,7 +21,7 @@ class Client:
         if not isinstance(token, str):
             raise TypeError("The API token must be a string")
         if not isinstance(options, dict):
-            raise TypeError("options must be a dictionary")
+            raise TypeError("Options must be a dictionary")
 
         self.token: str = token
         self.base_url: str = options.get("baseURL", "https://unbelievaboat.com/api")
