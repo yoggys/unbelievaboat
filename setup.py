@@ -17,6 +17,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         "aiohttp ~= 3.8.4",
+        "typing_extensions ~= 4.12.2",
     ],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
