@@ -1,5 +1,6 @@
 from datetime import datetime
-from typing import Any, Dict, Self
+from typing import Any, Dict
+from typing_extensions import Self
 
 from .BaseItem import BaseItem
 

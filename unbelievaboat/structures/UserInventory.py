@@ -1,5 +1,6 @@
 import asyncio
-from typing import Dict, List, Optional, Self, Union
+from typing import Dict, List, Optional, Union
+from typing_extensions import Self
 
 from .items import InventoryItem, StoreItem
 
