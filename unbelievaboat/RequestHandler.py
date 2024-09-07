@@ -20,16 +20,7 @@ class RequestHandler:
 
     @staticmethod
     def get_route(method: str, endpoint: str) -> str:
-        major_params = ["guilds"]
-        route = re.sub(
-            r"/([a-z-]+)/(?:(\d+))",
-            lambda match: (
-                match.group()
-                if match.group(1) in major_params
-                else f"/{match.group(1)}/:id"
-            ),
-            endpoint,
-        )
+        route = re.sub(r"/\d+", "/:id", endpoint)
         return f"{method}/{route}"
 
     def get_url(self, endpoint: str) -> str:
