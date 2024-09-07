@@ -1,11 +1,10 @@
 from .Guild import Guild
+from .items import *
 from .Leaderboard import Leaderboard
 from .Permission import Permission
+from .Store import Store
 from .UserBalance import UserBalance
 from .UserInventory import UserInventory
-from .Store import Store
-
-from .items import *
 
 __all__ = [
     "Guild",

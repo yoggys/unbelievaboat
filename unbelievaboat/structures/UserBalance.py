@@ -1,4 +1,6 @@
-from typing import Any, Dict, Optional, Self
+from typing import Any, Dict, Optional
+
+from typing_extensions import Self
 
 
 class UserBalance:

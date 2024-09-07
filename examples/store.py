@@ -1,5 +1,6 @@
-from unbelievaboat import Client
 import asyncio
+
+from unbelievaboat import Client
 
 
 async def main():

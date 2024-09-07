@@ -1,4 +1,4 @@
-from typing import Dict, Union
+from typing import Dict, List, Union
 
 
 class Permission:
@@ -20,7 +20,7 @@ class Permission:
                 )
         return json
 
-    def has(self, permissions: Union[str, list[str]]) -> bool:
+    def has(self, permissions: Union[str, List[str]]) -> bool:
         if isinstance(permissions, list):
             return all(
                 bool(self.allow & getattr(self.__class__, perm)) for perm in permissions

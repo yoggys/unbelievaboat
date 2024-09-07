@@ -1,9 +1,9 @@
 import asyncio
+import re
 import time
 from typing import Any, Dict, Optional
 
 from .errors import APIError, HTTPError
-import re
 
 
 class RequestHandler:
@@ -19,9 +19,11 @@ class RequestHandler:
         major_params = ["guilds"]
         route = re.sub(
             r"/([a-z-]+)/(?:(\d+))",
-            lambda match: match.group()
-            if match.group(1) in major_params
-            else f"/{match.group(1)}/:id",
+            lambda match: (
+                match.group()
+                if match.group(1) in major_params
+                else f"/{match.group(1)}/:id"
+            ),
             endpoint,
         )
         return f"{method}/{route}"

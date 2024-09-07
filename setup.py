@@ -1,6 +1,6 @@
-from setuptools import find_packages, setup
 from pathlib import Path
 
+from setuptools import find_packages, setup
 
 cwd = Path(__file__).parent
 long_description = (cwd / "README.md").read_text()
@@ -17,6 +17,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         "aiohttp ~= 3.8.4",
+        "typing_extensions ~= 4.12.2",
     ],
     classifiers=[
         "Development Status :: 5 - Production/Stable",
