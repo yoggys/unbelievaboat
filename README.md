@@ -29,7 +29,7 @@ import asyncio
 
 
 async def main() -> None:
-    # Initialize the client with your API _token
+    # Initialize the client with your API token
     client = Client("your-api-token")
     
     guild_id = ...
@@ -40,31 +40,23 @@ async def main() -> None:
     print(guild)
 
     # Retrieve user balance
-    user = await client.get_user_balance(guild_id, user_id)
-    print(user.total)
-
+    user = await guild.get_user_balance(user_id)
+    print(user)
+    
     # Set or update user balance
-    user = await client.set_user_balance(guild_id, user_id, bank=100)
-    user = await client.update_user_balance(guild_id, user_id, bank=100)
-    print(user.bank, user.total)
-    # or
-    user = await client.get_user_balance(guild_id, user_id)
-    user = await user.set(bank=100)
-    user = await user.update(bank=100)
-    print(user.bank, user.total)
-
-    # Retrieve leaderboard data
-    leaderboard = await client.get_guild_leaderboard(guild_id)
-    print(leaderboard.users)
-
-    # Retrieve item shop data
-    shop = await client.get_store_items(guild_id)
-    print(shop.items)
+    await user.set(bank=100)
+    await user.update(bank=-100)
+    print(user)
 
     # Close the client session
     await client.close()
-
-
+    
+    # You can also use async context manager
+    async with Client("your-api-token") as client:
+        leaderboard = await client.get_guild_leaderboard(guild_id)
+        print(leaderboard)
+        
+        
 asyncio.run(main())
 ```
 
