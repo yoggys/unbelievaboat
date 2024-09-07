@@ -181,6 +181,7 @@ class Client:
         emoji_id: Optional[int] = None,
         cascade_update: Optional[bool] = False,
     ) -> StoreItem:
+        # TODO: proper data filling
         data = {
             "name": name,
             "price": price,
@@ -190,8 +191,12 @@ class Client:
             "is_sellable": is_sellable,
             "stock_remaining": stock_remaining,
             "unlimited_stock": unlimited_stock,
-            "requirements": [requirement.json() for requirement in requirements],
-            "actions": [action.json() for action in actions],
+            "requirements": (
+                [requirement.json() for requirement in requirements]
+                if requirements
+                else None
+            ),
+            "actions": [action.json() for action in actions] if actions else None,
             "expires_at": expires_at.isoformat(),
             "emoji_unicode": emoji_unicode,
             "emoji_id": emoji_id,
