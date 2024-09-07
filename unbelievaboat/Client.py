@@ -1,8 +1,8 @@
 from datetime import datetime
 from typing import Any, Dict, List, Literal, Optional
-from typing_extensions import Self
 
 import aiohttp
+from typing_extensions import Self
 
 from .RequestHandler import RequestHandler
 from .structures import (
@@ -188,7 +188,7 @@ class Client:
         emoji_id: Optional[int] = None,
         cascade_update: Optional[bool] = False,
     ) -> StoreItem:
-        # TODO: proper data filling
+        # TODO: replace default values with MISSING
         data = {
             "name": name,
             "price": price,

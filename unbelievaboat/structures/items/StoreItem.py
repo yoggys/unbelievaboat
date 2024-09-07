@@ -1,10 +1,10 @@
 from datetime import datetime
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
 
 from typing_extensions import Self
 
 from ...Client import Client
-from .BaseItem import BaseItem
+from . import BaseItem, StoreItemAction, StoreItemRequirement
 
 
 class StoreItem(BaseItem):
@@ -47,13 +47,41 @@ class StoreItem(BaseItem):
 
     async def edit(
         self,
-        data: Optional[Dict[str, Any]],
-        params: Optional[Dict[str, Any]],  # TODO: replace params with args
+        name: Optional[str] = None,
+        price: Optional[int] = None,
+        description: Optional[str] = None,
+        is_inventory: Optional[bool] = None,
+        is_usable: Optional[bool] = None,
+        is_sellable: Optional[bool] = None,
+        stock_remaining: Optional[int] = None,
+        unlimited_stock: Optional[bool] = None,
+        requirements: Optional[List[StoreItemRequirement]] = None,
+        actions: Optional[List[StoreItemAction]] = None,
+        expires_at: Optional[datetime] = None,
+        emoji_unicode: Optional[str] = None,
+        emoji_id: Optional[int] = None,
+        cascade_update: Optional[bool] = False,
     ) -> Self:
-        data = data or {}
-        params = params or {}
+        # TODO: replace default values with MISSING
         self._update(
-            await self._client.edit_store_item(self.guild_id, self.id, data, params)
+            await self._client.edit_store_item(
+                self.guild_id,
+                self.id,
+                name,
+                price,
+                description,
+                is_inventory,
+                is_usable,
+                is_sellable,
+                stock_remaining,
+                unlimited_stock,
+                requirements,
+                actions,
+                expires_at,
+                emoji_unicode,
+                emoji_id,
+                cascade_update,
+            )
         )
         return self
 

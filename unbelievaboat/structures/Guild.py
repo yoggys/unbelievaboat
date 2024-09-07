@@ -1,6 +1,7 @@
-from typing import Any, Dict, Literal, Optional
+from typing import Any, Dict, Literal, Optional, Union
 
 from ..Client import Client
+from .items import InventoryItem, StoreItem
 from .Leaderboard import Leaderboard
 from .Permission import Permission
 from .UserBalance import UserBalance
@@ -34,11 +35,13 @@ class Guild:
     async def get_application_permission(self) -> Permission:
         return await self._client.get_application_permission(self.id)
 
-    async def get_leaderboard(self, params: Optional[Dict[str, Any]]) -> Leaderboard:
+    async def get_leaderboard(
+        self, params: Optional[Dict[str, Any]] = None
+    ) -> Leaderboard:
         return await self._client.get_guild_leaderboard(self.id, params)
 
     async def get_full_leaderboard(
-        self, params: Optional[Dict[str, Any]]
+        self, params: Optional[Dict[str, Any]] = None
     ) -> Leaderboard:
         return await self._client.get_full_guild_leaderboard(self.id, params)
 
@@ -65,6 +68,17 @@ class Guild:
     ) -> UserBalance:
         return await self._client.update_user_balance(
             self.id, user_id, cash=cash, bank=bank, reason=reason
+        )
+
+    async def add_inventory_item(
+        self,
+        user_id: int,
+        item: Union[int, Union[InventoryItem, StoreItem]],
+        quantity: int = 1,
+    ) -> InventoryItem:
+        item_id = item if isinstance(item, int) else item.id
+        return await self._client.add_inventory_item(
+            self.id, user_id, item_id, quantity
         )
 
     async def get_inventory_items(

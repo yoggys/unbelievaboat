@@ -1,5 +1,5 @@
 import asyncio
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Optional, Union
 
 from typing_extensions import Self
 
@@ -58,15 +58,27 @@ class UserInventory:
 
         for index, item in enumerate(self.items):
             if item.id == item_id:
-                if quantity is None or quantity >= item.quantity:
+                if quantity >= item.quantity:
                     self.items.remove(item)
                 else:
                     self.items[index].quantity -= quantity
                 break
-
         return self
 
-    async def clear(self) -> Self:
-        await asyncio.gather(*[self.remove(item, item.quantity) for item in self.items])
-        self.items.clear()
+    async def clear(
+        self, item: Optional[Union[int, Union[InventoryItem, StoreItem]]] = None
+    ) -> Self:
+        if not item:
+            await asyncio.gather(
+                *[self.remove(item, item.quantity) for item in self.items]
+            )
+            self.items.clear()
+            return self
+
+        item_id = item if isinstance(item, int) else item.id
+        for item in self.items:
+            if item.id == item_id:
+                await self.remove(item, item.quantity)
+                self.items.remove(item)
+                break
         return self

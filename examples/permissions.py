@@ -12,9 +12,9 @@ async def main() -> None:
     permissions = await client.get_application_permission(guild_id)
 
     # Check permissions
-    print(permissions.allow)
-    print(permissions.economy)
-    print(permissions.items)
+    print(f"Flags: {permissions}")
+    print(f"Economy: {permissions.economy}")
+    print(f"Items: {permissions.items}")
 
     await client.close()
 

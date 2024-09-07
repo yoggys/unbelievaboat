@@ -1,7 +1,7 @@
 import asyncio
 import re
 import time
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from aiohttp import ClientResponse
 
@@ -81,7 +81,7 @@ class RequestHandler:
         data: Optional[Dict[str, Any]] = None,
         params: Optional[Dict[str, Any]] = None,
         _attempts: int = 0,
-    ) -> Any:
+    ) -> Union[Dict[str, Any], List[Any], str]:
         route = self.get_route(method, endpoint)
         if route not in self.locks:
             self.locks[route] = asyncio.Lock()
@@ -98,7 +98,7 @@ class RequestHandler:
         data: Optional[Dict[str, Any]] = None,
         params: Optional[Dict[str, Any]] = None,
         _attempts: int = 0,
-    ):
+    ) -> Union[Dict[str, Any], List[Any], str]:
         async with self.locks[route]:
             await self.check_ratelimit(route)
 

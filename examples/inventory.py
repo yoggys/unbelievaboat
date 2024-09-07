@@ -18,7 +18,7 @@ async def main() -> None:
 
     # Add each item from the store to the user inventory
     for item in store.items:
-        inventory = await inventory.add(item, 1)
+        await inventory.add(item, 1)
     print(inventory.items)
 
     # Remove each item from the user inventory

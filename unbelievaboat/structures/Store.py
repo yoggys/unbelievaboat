@@ -1,7 +1,10 @@
-from typing import Any, List
+from datetime import datetime
+from typing import Any, List, Optional, Union
+
+from typing_extensions import Self
 
 from ..Client import Client
-from .items import StoreItem
+from .items import InventoryItem, StoreItem, StoreItemAction, StoreItemRequirement
 
 
 class Store:
@@ -28,4 +31,60 @@ class Store:
     def id(self) -> int:
         return self.guild_id
 
-    # TODO: add item methods add, delete, edit
+    async def remove(
+        self, item: Union[int, StoreItem, InventoryItem], cascade: bool = False
+    ) -> Self:
+        item_id = item if isinstance(item, int) else item.id
+        await self._client.delete_store_item(self.guild_id, item_id, cascade)
+
+        for item in self.items:
+            if item.id == item_id:
+                self.items.remove(item)
+                break
+        return self
+
+    async def edit(
+        self,
+        item: Union[int, StoreItem, InventoryItem],
+        name: Optional[str] = None,
+        price: Optional[int] = None,
+        description: Optional[str] = None,
+        is_inventory: Optional[bool] = None,
+        is_usable: Optional[bool] = None,
+        is_sellable: Optional[bool] = None,
+        stock_remaining: Optional[int] = None,
+        unlimited_stock: Optional[bool] = None,
+        requirements: Optional[List[StoreItemRequirement]] = None,
+        actions: Optional[List[StoreItemAction]] = None,
+        expires_at: Optional[datetime] = None,
+        emoji_unicode: Optional[str] = None,
+        emoji_id: Optional[int] = None,
+        cascade_update: Optional[bool] = False,
+    ) -> Self:
+        # TODO: replace default values with MISSING
+        item_id = item if isinstance(item, int) else item.id
+        data = await self._client.edit_store_item(
+            self.guild_id,
+            item_id,
+            name,
+            price,
+            description,
+            is_inventory,
+            is_usable,
+            is_sellable,
+            stock_remaining,
+            unlimited_stock,
+            requirements,
+            actions,
+            expires_at,
+            emoji_unicode,
+            emoji_id,
+            cascade_update,
+        )
+
+        for index, item in enumerate(self.items):
+            if item.id == item_id:
+                self.items[index] = data
+                break
+
+        return self
