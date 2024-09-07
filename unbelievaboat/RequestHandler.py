@@ -1,33 +1,41 @@
 import asyncio
+import re
 import time
 from typing import Any, Dict, Optional
 
+from aiohttp import ClientResponse
+
+from .Client import Client
 from .errors import APIError, HTTPError
-import re
 
 
 class RequestHandler:
-    def __init__(self, client) -> None:
-        self._client = client
+    def __init__(self, client: Client) -> None:
+        self._client: Client = client
         self.locks: Dict[str, asyncio.Lock] = {}
         self.timeouts: Dict[str, float] = {}
 
     def __str__(self) -> str:
         return "<RequestHandler>"
 
-    def get_route(self, method: str, endpoint: str) -> str:
+    @staticmethod
+    def get_route(method: str, endpoint: str) -> str:
         major_params = ["guilds"]
         route = re.sub(
             r"/([a-z-]+)/(?:(\d+))",
-            lambda match: match.group()
-            if match.group(1) in major_params
-            else f"/{match.group(1)}/:id",
+            lambda match: (
+                match.group()
+                if match.group(1) in major_params
+                else f"/{match.group(1)}/:id"
+            ),
             endpoint,
         )
         return f"{method}/{route}"
 
     def get_url(self, endpoint: str) -> str:
-        return "{}/{}/{}".format(self._client.base_url, self._client.version, endpoint)
+        return "{}/{}/{}".format(
+            self._client._base_url, self._client._version, endpoint
+        )
 
     def get_data(
         self,
@@ -38,7 +46,7 @@ class RequestHandler:
     ) -> Dict[str, Any]:
         return {
             "headers": {
-                "Authorization": self._client.token,
+                "Authorization": self._client._token,
                 "Content-Type": "application/json",
             },
             "url": url,
@@ -54,7 +62,7 @@ class RequestHandler:
                 await asyncio.sleep(timeout)
             del self.timeouts[route]
 
-    def handle_ratelimit(self, route: str, response: Dict[str, Any]) -> None:
+    def handle_ratelimit(self, route: str, response: ClientResponse) -> None:
         remaining = int(response.headers.get("x-ratelimit-remaining", 0))
         if remaining <= 0:
             if response.headers.get("retry-after"):
@@ -104,7 +112,7 @@ class RequestHandler:
 
                 self.handle_ratelimit(route, response)
 
-                if response.status >= 200 and response.status < 300:
+                if 200 <= response.status < 300:
                     if response.content_type == "application/json":
                         return await response.json()
                     else:

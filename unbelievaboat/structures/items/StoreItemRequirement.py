@@ -1,21 +1,21 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from ...util.Constants import ItemRequirementMatchType, ItemRequirementType
 
 
 class StoreItemRequirement:
     def __init__(self, data: Dict[str, Any]) -> None:
-        self.type: ItemRequirementType = ItemRequirementType(data["type"])
+        self.type: ItemRequirementType = ItemRequirementType(data.get("type"))
 
         if self.type in [ItemRequirementType.ROLE, ItemRequirementType.ITEM]:
             self.matchType: ItemRequirementMatchType = ItemRequirementMatchType(
-                data["match_type"]
+                data.get("match_type")
             )
             self.ids: List[str] = data.get("ids", [])
         elif self.type == ItemRequirementType.TOTAL_BALANCE:
             self.balance: Optional[int] = data.get("balance")
 
-    def toJSON(self) -> dict:
+    def json(self) -> Dict[str, Optional[Union[str, int, List[str]]]]:
         json = {
             "type": self.type.value,
             "matchType": self.matchType.value if self.matchType else None,

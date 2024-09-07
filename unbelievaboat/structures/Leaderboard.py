@@ -1,11 +1,11 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 from .UserBalance import UserBalance
 
 
 class Leaderboard:
-    def __init__(self, client, data: Dict[str, Any] = {}) -> None:
-        self.guild_id: str = data.get("guild_id")
+    def __init__(self, client, data: Dict[str, Any]) -> None:
+        self.guild_id: int = int(data.get("guild_id"))
         self.users: List[UserBalance] = [
             UserBalance(client, {**user, "guild_id": self.guild_id})
             for user in data.get("users", [])
@@ -20,3 +20,7 @@ class Leaderboard:
             self.total_pages,
             self.page,
         )
+
+    @property
+    def id(self) -> int:
+        return self.guild_id

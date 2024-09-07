@@ -1,16 +1,20 @@
-from typing import Any, Dict, Optional, Self
+from typing import Any, Dict, Optional
+
+from typing_extensions import Self
+
+from ..Client import Client
 
 
 class UserBalance:
-    def __init__(self, client, data: Dict[str, Any] = {}) -> None:
-        self.guild_id: str = data.get("guild_id")
-        self.user_id: str = data.get("user_id")
+    def __init__(self, client: Client, data: Dict[str, Any]) -> None:
+        self.guild_id: int = int(data.get("guild_id"))
+        self.user_id: int = int(data.get("user_id"))
         self.rank: Optional[int] = data.get("rank")
         self.cash: int = data.get("cash")
         self.bank: int = data.get("bank")
         self.total: int = data.get("total")
 
-        self._client = client
+        self._client: Client = client
         self._raw_data: Dict[str, Any] = data
 
     def __str__(self) -> str:
@@ -21,25 +25,43 @@ class UserBalance:
         )
 
     @property
-    def id(self) -> str:
+    def id(self) -> int:
         return self.user_id
 
-    async def set_balance(self, data: Dict[str, Any] = {}, reason: str = None) -> Self:
-        self = await self._client.set_user_balance(
-            self.guild_id, self.user_id, data, reason
-        )
+    def _update(self, data: Self) -> None:
+        self.rank = data.rank
+        self.cash = data.cash
+        self.bank = data.bank
+        self.total = data.total
+
+    async def refresh(self) -> Self:
+        self._update(await self._client.get_user_balance(self.guild_id, self.user_id))
         return self
 
-    async def update_balance(
-        self, data: Dict[str, Any] = {}, reason: str = None
+    async def set(
+        self, cash: Optional[int] = None, bank: Optional[int] = None, reason: str = None
     ) -> Self:
-        self = await self._client.update_user_balance(
-            self.guild_id, self.user_id, data, reason
+        self._update(
+            await self._client.set_user_balance(
+                self.guild_id, self.user_id, cash, bank, reason
+            )
         )
         return self
 
-    async def clear_balance(self, reason: str = None) -> Self:
-        self = await self._client.set_user_balance(
-            self.guild_id, self.user_id, {"cash": 0, "bank": 0}, reason
+    async def update(
+        self, cash: Optional[int] = None, bank: Optional[int] = None, reason: str = None
+    ) -> Self:
+        self._update(
+            await self._client.update_user_balance(
+                self.guild_id, self.user_id, cash, bank, reason
+            )
+        )
+        return self
+
+    async def clear(self, reason: str = None) -> Self:
+        self._update(
+            await self._client.set_user_balance(
+                self.guild_id, self.user_id, cash=0, bank=0, reason=reason
+            )
         )
         return self

@@ -5,10 +5,10 @@ from ...util.Constants import ItemActionType
 
 class StoreItemAction:
     def __init__(self, data: Dict[str, Any]) -> None:
-        self.type: ItemActionType = ItemActionType(data["type"])
+        self.type: ItemActionType = ItemActionType(data.get("type"))
 
         if self.type == ItemActionType.RESPOND:
-            self.message: str = data["message"]
+            self.message: str = data.get("message")
         elif self.type in [
             ItemActionType.ADD_ROLES,
             ItemActionType.ADD_ITEMS,
@@ -19,7 +19,7 @@ class StoreItemAction:
         elif self.type in [ItemActionType.ADD_BALANCE, ItemActionType.REMOVE_BALANCE]:
             self.balance: Optional[int] = data.get("balance")
 
-    def toJSON(self) -> dict:
+    def json(self) -> Dict[str, Any]:
         return {"type": self.type.value, **self.__dict__}
 
     def __str__(self) -> str:

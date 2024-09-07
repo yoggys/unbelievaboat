@@ -4,7 +4,7 @@ from .structures import *
 
 __all__ = [
     "Client",
-    "ApiError",
+    "APIError",
     "HTTPError",
     "Guild",
     "Permission",
