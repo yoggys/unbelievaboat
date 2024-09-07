@@ -17,7 +17,7 @@ from .structures import (
     UserBalance,
     UserInventory,
 )
-from .util import to_snake_case_deep
+from .utils import to_snake_case_deep
 
 
 class Client:
