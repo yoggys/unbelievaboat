@@ -28,7 +28,7 @@ from unbelievaboat import Client
 import asyncio
 
 
-async def main():
+async def main() -> None:
     # Initialize the client with your API _token
     client = Client("your-api-token")
     

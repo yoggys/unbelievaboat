@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Any, Dict, List, Literal, Optional
+from typing_extensions import Self
 
 import aiohttp
 
@@ -39,6 +40,12 @@ class Client:
 
         # Create an instance of the RequestHandler
         self._request_handler: RequestHandler = RequestHandler(self)
+
+    async def __aenter__(self) -> Self:
+        return self
+
+    async def __aexit__(self, exc_type, exc, tb) -> None:
+        await self.close()
 
     def __str__(self) -> str:
         return "<Client _base_url={}, _version={}, max_retries={}>".format(

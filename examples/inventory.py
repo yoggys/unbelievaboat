@@ -3,7 +3,7 @@ import asyncio
 from unbelievaboat import Client
 
 
-async def main():
+async def main() -> None:
     client = Client(...)
 
     guild_id = ...
