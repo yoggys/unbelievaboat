@@ -79,6 +79,5 @@ class UserInventory:
         for item in self.items:
             if item.id == item_id:
                 await self.remove(item, item.quantity)
-                self.items.remove(item)
                 break
         return self

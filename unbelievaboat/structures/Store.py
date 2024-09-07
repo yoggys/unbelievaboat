@@ -1,3 +1,4 @@
+import asyncio
 from datetime import datetime
 from typing import Any, List, Optional, Union
 
@@ -42,6 +43,11 @@ class Store:
             if item.id == item_id:
                 self.items.remove(item)
                 break
+        return self
+
+    async def clear(self, cascade: bool = False) -> Self:
+        await asyncio.gather(*[self.remove(item, cascade) for item in self.items])
+        self.items.clear()
         return self
 
     async def edit(
