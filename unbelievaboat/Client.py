@@ -47,7 +47,7 @@ class Client:
         await self.close()
 
     def __str__(self) -> str:
-        return "<Client _base_url={}, _version={}, max_retries={}>".format(
+        return "<Client base_url={}, version={}, max_retries={}>".format(
             self._base_url, self._version, self._max_retries
         )
 
