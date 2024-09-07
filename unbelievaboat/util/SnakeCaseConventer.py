@@ -1,5 +1,5 @@
 import re
-from typing import Any, Union, Dict, List
+from typing import Any, Dict, List, Union
 
 
 def to_snake_case_deep(

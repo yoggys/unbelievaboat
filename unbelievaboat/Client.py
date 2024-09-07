@@ -5,13 +5,13 @@ import aiohttp
 from .RequestHandler import RequestHandler
 from .structures import (
     Guild,
-    UserInventory,
     InventoryItem,
     Leaderboard,
     Permission,
     Store,
     StoreItem,
     UserBalance,
+    UserInventory,
 )
 from .util import to_snake_case_deep
 
