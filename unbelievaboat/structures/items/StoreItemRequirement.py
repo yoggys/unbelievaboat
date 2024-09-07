@@ -8,7 +8,7 @@ class StoreItemRequirement:
         self.type: ItemRequirementType = ItemRequirementType(data.get("type"))
 
         if self.type in [ItemRequirementType.ROLE, ItemRequirementType.ITEM]:
-            self.matchType: ItemRequirementMatchType = ItemRequirementMatchType(
+            self.match_type: ItemRequirementMatchType = ItemRequirementMatchType(
                 data.get("match_type")
             )
             self.ids: List[str] = data.get("ids", [])
@@ -18,7 +18,7 @@ class StoreItemRequirement:
     def json(self) -> Dict[str, Optional[Union[str, int, List[str]]]]:
         json = {
             "type": self.type.value,
-            "matchType": self.matchType.value if self.matchType else None,
+            "match_type": self.match_type.value if self.match_type else None,
         }
         if self.type in [ItemRequirementType.ROLE, ItemRequirementType.ITEM]:
             json["ids"] = self.ids
@@ -27,11 +27,10 @@ class StoreItemRequirement:
         return json
 
     def __str__(self) -> str:
-        if hasattr(self, "matchType"):
-            return "<StoreItemRequirement type={} matchType={} ids={}>".format(
-                self.type, self.matchType, self.ids
+        if hasattr(self, "match_type"):
+            return "<StoreItemRequirement type={} match_type={} ids={}>".format(
+                self.type, self.match_type, self.ids
             )
-
         if hasattr(self, "ids"):
             return "<StoreItemRequirement type={} balance={}>".format(
                 self.type, self.balance

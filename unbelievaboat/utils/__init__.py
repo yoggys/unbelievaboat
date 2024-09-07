@@ -1,8 +1,8 @@
 from .Constants import *
-from .SnakeCaseConventer import to_snake_case_deep
+from .helpers import MISSING
 
 __all__ = [
-    "to_snake_case_deep",
+    "MISSING",
     "ItemActionType",
     "ItemRequirementType",
     "ItemRequirementMatchType",

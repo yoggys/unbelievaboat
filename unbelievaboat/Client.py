@@ -17,7 +17,7 @@ from .structures import (
     UserBalance,
     UserInventory,
 )
-from .utils import to_snake_case_deep
+from .utils import MISSING
 
 
 class Client:
@@ -38,7 +38,6 @@ class Client:
         self._max_retries: int = max_retries
         self._session: aiohttp.ClientSession = aiohttp.ClientSession()
 
-        # Create an instance of the RequestHandler
         self._request_handler: RequestHandler = RequestHandler(self)
 
     async def __aenter__(self) -> Self:
@@ -173,49 +172,60 @@ class Client:
         self,
         guild_id: int,
         item_id: int,
-        name: Optional[str] = None,
-        price: Optional[int] = None,
-        description: Optional[str] = None,
-        is_inventory: Optional[bool] = None,
-        is_usable: Optional[bool] = None,
-        is_sellable: Optional[bool] = None,
-        stock_remaining: Optional[int] = None,
-        unlimited_stock: Optional[bool] = None,
-        requirements: Optional[List[StoreItemRequirement]] = None,
-        actions: Optional[List[StoreItemAction]] = None,
-        expires_at: Optional[datetime] = None,
-        emoji_unicode: Optional[str] = None,
-        emoji_id: Optional[int] = None,
-        cascade_update: Optional[bool] = False,
+        name: Optional[str] = MISSING,
+        price: Optional[int] = MISSING,
+        description: Optional[str] = MISSING,
+        is_inventory: Optional[bool] = MISSING,
+        is_usable: Optional[bool] = MISSING,
+        is_sellable: Optional[bool] = MISSING,
+        stock_remaining: Optional[int] = MISSING,
+        unlimited_stock: Optional[bool] = MISSING,
+        requirements: Optional[List[StoreItemRequirement]] = MISSING,
+        actions: Optional[List[StoreItemAction]] = MISSING,
+        expires_at: Optional[datetime] = MISSING,
+        emoji_unicode: Optional[str] = MISSING,
+        emoji_id: Optional[int] = MISSING,
+        cascade_update: Optional[bool] = MISSING,
     ) -> StoreItem:
-        # TODO: replace default values with MISSING
-        data = {
-            "name": name,
-            "price": price,
-            "description": description,
-            "is_inventory": is_inventory,
-            "is_usable": is_usable,
-            "is_sellable": is_sellable,
-            "stock_remaining": stock_remaining,
-            "unlimited_stock": unlimited_stock,
-            "requirements": (
+        data = {}
+        if name is not MISSING:
+            data["name"] = name
+        if price is not MISSING:
+            data["price"] = price
+        if description is not MISSING:
+            data["description"] = description
+        if is_inventory is not MISSING:
+            data["is_inventory"] = is_inventory
+        if is_usable is not MISSING:
+            data["is_usable"] = is_usable
+        if is_sellable is not MISSING:
+            data["is_sellable"] = is_sellable
+        if stock_remaining is not MISSING:
+            data["stock_remaining"] = stock_remaining
+        if unlimited_stock is not MISSING:
+            data["unlimited_stock"] = unlimited_stock
+        if requirements is not MISSING:
+            data["requirements"] = (
                 [requirement.json() for requirement in requirements]
                 if requirements
                 else None
-            ),
-            "actions": [action.json() for action in actions] if actions else None,
-            "expires_at": expires_at.isoformat(),
-            "emoji_unicode": emoji_unicode,
-            "emoji_id": emoji_id,
-        }
+            )
+        if actions is not MISSING:
+            data["actions"] = [action.json() for action in actions] if actions else None
+        if expires_at is not MISSING:
+            data["expires_at"] = expires_at.isoformat() if expires_at else None
+        if emoji_unicode is not MISSING:
+            data["emoji_unicode"] = emoji_unicode
+        if emoji_id is not MISSING:
+            data["emoji_id"] = emoji_id
+
         params = {
             "cascade_update": cascade_update,
         }
 
         endpoint: str = f"guilds/{guild_id}/items/{item_id}"
-        payload: Dict[str, Any] = to_snake_case_deep(data)
         response: Dict[str, Any] = await self._request_handler.request(
-            "PATCH", endpoint, data=payload, params=params
+            "PATCH", endpoint, data=data, params=params
         )
         response["guild_id"] = guild_id
         return StoreItem(self, response)

@@ -20,17 +20,22 @@ class StoreItemAction:
             self.balance: Optional[int] = data.get("balance")
 
     def json(self) -> Dict[str, Any]:
-        return {"type": self.type.value, **self.__dict__}
+        json = {"type": self.type.value}
+        if hasattr(self, "message"):
+            json["message"] = self.message
+        elif hasattr(self, "ids"):
+            json["ids"] = self.ids
+        elif hasattr(self, "balance"):
+            json["balance"] = self.balance
+        return json
 
     def __str__(self) -> str:
         if hasattr(self, "message"):
             return "<StoreItemAction type={} message={}>".format(
                 self.type, self.message
             )
-
         if hasattr(self, "ids"):
             return "<StoreItemAction type={} ids={}>".format(self.type, self.ids)
-
         if hasattr(self, "balance"):
             return "<StoreItemAction type={} balance={}>".format(
                 self.type, self.balance
