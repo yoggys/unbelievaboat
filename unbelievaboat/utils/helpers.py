@@ -5,6 +5,7 @@ from typing_extensions import Self
 
 
 class Embed:
+    # noinspection PyUnusedLocal
     def __init__(
         self,
         title: Optional[str] = None,
@@ -84,10 +85,11 @@ class Embed:
 
 
 class Message:
+    # noinspection PyUnusedLocal
     def __init__(
         self,
         content: Optional[str] = None,
-        embeds: Optional[List[Embed, Dict[str, Any]]] = None,
+        embeds: Optional[List[Union[Embed, Dict[str, Any]]]] = None,
         **kwargs
     ) -> None:
         self.content: Optional[str] = content

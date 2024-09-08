@@ -1,19 +1,36 @@
-from typing import Any, Dict, List, Optional, Union
+from typing import Dict, List, Optional, Union
 
 from ...utils.Constants import ItemRequirementMatchType, ItemRequirementType
 
 
 class StoreItemRequirement:
-    def __init__(self, data: Dict[str, Any]) -> None:
-        # TODO: Allow user creation
-        self.type: ItemRequirementType = ItemRequirementType[data.get("type")]
+    # noinspection PyUnusedLocal,PyShadowingBuiltins
+    def __init__(
+        self,
+        type: Union[ItemRequirementType, str, int],
+        match_type: Optional[Union[ItemRequirementMatchType, str, int]] = None,
+        ids: Optional[List[int]] = None,
+        balance: Optional[int] = None,
+        **kwargs
+    ) -> None:
+        self.type: ItemRequirementType = (
+            ItemRequirementType[type]
+            if isinstance(type, str)
+            else ItemRequirementType(type) if isinstance(type, int) else type
+        )
         if self.type in [ItemRequirementType.ROLE, ItemRequirementType.ITEM]:
-            self.match_type: ItemRequirementMatchType = ItemRequirementMatchType[
-                data.get("match_type")
-            ]
-            self.ids: List[int] = data.get("ids", [])
+            self.match_type: ItemRequirementMatchType = (
+                ItemRequirementMatchType[match_type]
+                if isinstance(match_type, str)
+                else (
+                    ItemRequirementMatchType(match_type)
+                    if isinstance(match_type, int)
+                    else match_type
+                )
+            )
+            self.ids: List[int] = ids
         elif self.type == ItemRequirementType.TOTAL_BALANCE:
-            self.balance: Optional[int] = data.get("balance")
+            self.balance: Optional[int] = balance
 
     def json(self) -> Dict[str, Optional[Union[str, int, List[str]]]]:
         json = {

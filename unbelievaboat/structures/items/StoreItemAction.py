@@ -1,30 +1,42 @@
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Union
 
 from ...utils.Constants import ItemActionType
 from ...utils.helpers import Message
 
 
 class StoreItemAction:
-    def __init__(self, data: Dict[str, Any]) -> None:
-        # TODO: Allow user creation
-        self.type: ItemActionType = ItemActionType[data.get("type")]
-
+    # noinspection PyUnusedLocal,PyShadowingBuiltins
+    def __init__(
+        self,
+        type: Union[ItemActionType, str, int],
+        message: Optional[Union[Message, Dict[str, Any]]] = None,
+        ids: Optional[List[int]] = None,
+        balance: Optional[int] = None,
+        **kwargs
+    ) -> None:
+        self.type: ItemActionType = (
+            ItemActionType[type]
+            if isinstance(type, str)
+            else ItemActionType(type) if isinstance(type, int) else type
+        )
         if self.type == ItemActionType.RESPOND:
-            self.message: Message = Message(**data.get("message"))
+            self.message: Message = (
+                message if isinstance(message, Message) else Message(**message)
+            )
         elif self.type in [
             ItemActionType.ADD_ROLES,
             ItemActionType.ADD_ITEMS,
             ItemActionType.REMOVE_ROLES,
             ItemActionType.REMOVE_ITEMS,
         ]:
-            self.ids: List[int] = data.get("ids", [])
+            self.ids: List[int] = ids
         elif self.type in [ItemActionType.ADD_BALANCE, ItemActionType.REMOVE_BALANCE]:
-            self.balance: Optional[int] = data.get("balance")
+            self.balance: Optional[int] = balance
 
     def json(self) -> Dict[str, Any]:
         json = {"type": self.type.name}
         if hasattr(self, "message"):
-            json["message"] = self.message
+            json["message"] = self.message.json()
         elif hasattr(self, "ids"):
             json["ids"] = self.ids
         elif hasattr(self, "balance"):

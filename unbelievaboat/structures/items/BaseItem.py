@@ -13,11 +13,11 @@ class BaseItem:
         self.is_usable: bool = data.get("is_usable")
         self.is_sellable: bool = data.get("is_sellable")
         self.requirements: List[StoreItemRequirement] = [
-            StoreItemRequirement(requirement)
+            StoreItemRequirement(**requirement)
             for requirement in data.get("requirements", [])
         ]
         self.actions: List[StoreItemAction] = [
-            StoreItemAction(action) for action in data.get("actions", [])
+            StoreItemAction(**action) for action in data.get("actions", [])
         ]
         self.emoji_unicode: Optional[str] = data.get("emoji_unicode", None)
         self.emoji_id: Optional[str] = data.get("emoji_id", None)
