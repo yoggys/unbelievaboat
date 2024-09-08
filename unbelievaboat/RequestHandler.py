@@ -5,9 +5,10 @@ from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from aiohttp import ClientResponse
 
+from .errors import APIError, HTTPError
+
 if TYPE_CHECKING:
     from .Client import Client
-    from .errors import APIError, HTTPError
 
 
 class RequestHandler:
