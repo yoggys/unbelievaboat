@@ -5,6 +5,7 @@ from ...utils.Constants import ItemRequirementMatchType, ItemRequirementType
 
 class StoreItemRequirement:
     def __init__(self, data: Dict[str, Any]) -> None:
+        # TODO: Allow user creation
         self.type: ItemRequirementType = ItemRequirementType[data.get("type")]
         if self.type in [ItemRequirementType.ROLE, ItemRequirementType.ITEM]:
             self.match_type: ItemRequirementMatchType = ItemRequirementMatchType[

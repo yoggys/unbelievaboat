@@ -1,15 +1,16 @@
 from typing import Any, Dict, List, Optional
 
 from ...utils.Constants import ItemActionType
+from ...utils.helpers import Message
 
 
 class StoreItemAction:
     def __init__(self, data: Dict[str, Any]) -> None:
+        # TODO: Allow user creation
         self.type: ItemActionType = ItemActionType[data.get("type")]
 
         if self.type == ItemActionType.RESPOND:
-            # TODO: message object is {content: string, embeds: array}
-            self.message: str = data.get("message")
+            self.message: Message = Message(**data.get("message"))
         elif self.type in [
             ItemActionType.ADD_ROLES,
             ItemActionType.ADD_ITEMS,
