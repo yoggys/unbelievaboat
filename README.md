@@ -7,10 +7,6 @@
 
 This is a Python wrapper for the UnbelievaBoat API, which provides access to the UnbelievaBoat Discord bot functionality. It allows you to interact with the API endpoints to retrieve guild information, user balances, leaderboard data, and more.
 
-## Requirements
-
-- Python 3.8 or higher
-
 ## Installation
 
 You can install the UnbelievaBoat API Python wrapper using pip. Open your terminal and run the following command:
@@ -63,6 +59,10 @@ asyncio.run(main())
 Replace `"your-api-token"` with your actual API token. You can obtain an API token by logging into the UnbelievaBoat dashboard and generating a token for your bot.
 
 Please note that the above example demonstrates a basic usage scenario. You can explore other available methods in the `Client` class to interact with different API endpoints. You can also find more examples in the [examples](https://github.com/yoggys/unbelievaboat/tree/main/examples) directory. For more information about the UnbelievaBoat API (data/params), please refer to the [official documentation](https://unbelievaboat-api.readme.io/reference/).
+
+## Requirements
+
+- Python 3.8+
 
 ## Contributing
 
