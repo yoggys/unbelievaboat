@@ -1,3 +1,6 @@
+import asyncio
+import atexit
+import signal
 from datetime import datetime
 from typing import Any, Dict, List, Literal, Optional
 
@@ -40,19 +43,32 @@ class Client:
 
         self._request_handler: RequestHandler = RequestHandler(self)
 
-    async def __aenter__(self) -> Self:
-        return self
-
-    async def __aexit__(self, exc_type, exc, tb) -> None:
-        await self.close()
+        atexit.register(self._close_sync)
+        signal.signal(signal.SIGINT, self._handle_exit)
+        signal.signal(signal.SIGTERM, self._handle_exit)
 
     def __str__(self) -> str:
         return "<Client base_url={}, version={}, max_retries={}>".format(
             self._base_url, self._version, self._max_retries
         )
 
+    async def __aenter__(self) -> Self:
+        return self
+
+    async def __aexit__(self, exc_type, exc, tb) -> None:
+        await self.close()
+
     async def close(self) -> None:
-        await self._session.close()
+        if not self._session.closed:
+            await self._session.close()
+
+    def _close_sync(self) -> None:
+        if not self._session.closed:
+            asyncio.run(self.close())
+
+    def _handle_exit(self, signum, frame) -> None:
+        if not self._session.closed:
+            asyncio.run(self.close())
 
     async def _request(
         self,

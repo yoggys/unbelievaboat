@@ -30,7 +30,17 @@ class Embed:
         self.thumbnail: Optional[Dict[str, str]] = thumbnail
 
     def __str__(self) -> str:
-        return "<Embed>"
+        return "<Embed title='{}' description='{}' color={} fields={} author={} footer={} timestamp='{}' image={} thumbnail={}>".format(
+            self.title,
+            self.description,
+            self.color,
+            self.fields,
+            self.author,
+            self.footer,
+            self.timestamp,
+            self.image,
+            self.thumbnail,
+        )
 
     def json(self) -> Dict[str, Any]:
         json = {}
