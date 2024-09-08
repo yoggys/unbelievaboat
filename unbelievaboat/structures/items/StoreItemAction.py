@@ -5,9 +5,10 @@ from ...utils.Constants import ItemActionType
 
 class StoreItemAction:
     def __init__(self, data: Dict[str, Any]) -> None:
-        self.type: ItemActionType = ItemActionType(data.get("type"))
+        self.type: ItemActionType = ItemActionType[data.get("type")]
 
         if self.type == ItemActionType.RESPOND:
+            # TODO: message object is {content: string, embeds: array}
             self.message: str = data.get("message")
         elif self.type in [
             ItemActionType.ADD_ROLES,
@@ -15,12 +16,12 @@ class StoreItemAction:
             ItemActionType.REMOVE_ROLES,
             ItemActionType.REMOVE_ITEMS,
         ]:
-            self.ids: List[str] = data.get("ids", [])
+            self.ids: List[int] = data.get("ids", [])
         elif self.type in [ItemActionType.ADD_BALANCE, ItemActionType.REMOVE_BALANCE]:
             self.balance: Optional[int] = data.get("balance")
 
     def json(self) -> Dict[str, Any]:
-        json = {"type": self.type.value}
+        json = {"type": self.type.name}
         if hasattr(self, "message"):
             json["message"] = self.message
         elif hasattr(self, "ids"):

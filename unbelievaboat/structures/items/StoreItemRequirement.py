@@ -5,22 +5,21 @@ from ...utils.Constants import ItemRequirementMatchType, ItemRequirementType
 
 class StoreItemRequirement:
     def __init__(self, data: Dict[str, Any]) -> None:
-        self.type: ItemRequirementType = ItemRequirementType(data.get("type"))
-
+        self.type: ItemRequirementType = ItemRequirementType[data.get("type")]
         if self.type in [ItemRequirementType.ROLE, ItemRequirementType.ITEM]:
-            self.match_type: ItemRequirementMatchType = ItemRequirementMatchType(
+            self.match_type: ItemRequirementMatchType = ItemRequirementMatchType[
                 data.get("match_type")
-            )
-            self.ids: List[str] = data.get("ids", [])
+            ]
+            self.ids: List[int] = data.get("ids", [])
         elif self.type == ItemRequirementType.TOTAL_BALANCE:
             self.balance: Optional[int] = data.get("balance")
 
     def json(self) -> Dict[str, Optional[Union[str, int, List[str]]]]:
         json = {
-            "type": self.type.value,
-            "match_type": self.match_type.value if self.match_type else None,
+            "type": self.type.name,
         }
         if self.type in [ItemRequirementType.ROLE, ItemRequirementType.ITEM]:
+            json["match_type"] = self.match_type.name
             json["ids"] = self.ids
         elif self.type == ItemRequirementType.TOTAL_BALANCE:
             json["balance"] = self.balance
@@ -31,7 +30,7 @@ class StoreItemRequirement:
             return "<StoreItemRequirement type={} match_type={} ids={}>".format(
                 self.type, self.match_type, self.ids
             )
-        if hasattr(self, "ids"):
+        if hasattr(self, "balance"):
             return "<StoreItemRequirement type={} balance={}>".format(
                 self.type, self.balance
             )
