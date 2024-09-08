@@ -1,15 +1,17 @@
-from typing import Any, Dict, Literal, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, Literal, Optional, Union
 
-from ..Client import Client
 from .items import InventoryItem, StoreItem
 from .Leaderboard import Leaderboard
 from .Permission import Permission
 from .UserBalance import UserBalance
 from .UserInventory import UserInventory
 
+if TYPE_CHECKING:
+    from ..Client import Client
+
 
 class Guild:
-    def __init__(self, client: Client, data: Dict[str, Any]) -> None:
+    def __init__(self, client: "Client", data: Dict[str, Any]) -> None:
         self.id: int = int(data.get("id"))
         self.name: str = data.get("name")
         self.icon: Optional[str] = data.get("icon")
@@ -17,7 +19,7 @@ class Guild:
         self.member_count: int = data.get("member_count")
         self.currency_symbol: str = data.get("symbol")
 
-        self._client: Client = client
+        self._client: "Client" = client
         self._raw_data: Dict[str, Any] = data
 
     def __str__(self) -> str:

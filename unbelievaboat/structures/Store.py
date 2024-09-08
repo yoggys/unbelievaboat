@@ -1,16 +1,18 @@
 import asyncio
 from datetime import datetime
-from typing import Any, List, Optional, Union
+from typing import TYPE_CHECKING, Any, List, Optional, Union
 
 from typing_extensions import Self
 
-from ..Client import Client
 from ..utils import MISSING
 from .items import InventoryItem, StoreItem, StoreItemAction, StoreItemRequirement
 
+if TYPE_CHECKING:
+    from ..Client import Client
+
 
 class Store:
-    def __init__(self, client: Client, data: dict[str, Any]) -> None:
+    def __init__(self, client: "Client", data: dict[str, Any]) -> None:
         self.guild_id: int = int(data.get("guild_id"))
         self.items: List[StoreItem] = [
             StoreItem(client, {**item, "guild_id": self.guild_id})
@@ -19,7 +21,7 @@ class Store:
         self.total_pages: int = data.get("total_pages", 1)
         self.page: int = data.get("page", 1)
 
-        self._client: Client = client
+        self._client: "Client" = client
 
     def __str__(self) -> str:
         return "<Store guild_id={} items={} total_pages={} page={}>".format(

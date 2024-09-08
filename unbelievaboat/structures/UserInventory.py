@@ -1,14 +1,16 @@
 import asyncio
-from typing import Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from typing_extensions import Self
 
-from ..Client import Client
 from .items import InventoryItem, StoreItem
+
+if TYPE_CHECKING:
+    from ..Client import Client
 
 
 class UserInventory:
-    def __init__(self, client: Client, data: Dict[str, Any]) -> None:
+    def __init__(self, client: "Client", data: Dict[str, Any]) -> None:
         self.guild_id: int = int(data.get("guild_id"))
         self.user_id: int = int(data.get("user_id"))
         self.items: List[InventoryItem] = [
@@ -20,7 +22,7 @@ class UserInventory:
         self.total_pages: int = data.get("total_pages", 1)
         self.page: int = data.get("page", 1)
 
-        self._client: Client = client
+        self._client: "Client" = client
 
     def __str__(self) -> str:
         return "<UserInventory guild_id={} items={} total_pages={} page={}>".format(

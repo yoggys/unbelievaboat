@@ -1,12 +1,13 @@
-from typing import Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
 from typing_extensions import Self
 
-from ..Client import Client
+if TYPE_CHECKING:
+    from ..Client import Client
 
 
 class UserBalance:
-    def __init__(self, client: Client, data: Dict[str, Any]) -> None:
+    def __init__(self, client: "Client", data: Dict[str, Any]) -> None:
         self.guild_id: int = int(data.get("guild_id"))
         self.user_id: int = int(data.get("user_id"))
         self.rank: Optional[int] = data.get("rank")
@@ -14,7 +15,7 @@ class UserBalance:
         self.bank: int = data.get("bank")
         self.total: int = data.get("total")
 
-        self._client: Client = client
+        self._client: "Client" = client
         self._raw_data: Dict[str, Any] = data
 
     def __str__(self) -> str:

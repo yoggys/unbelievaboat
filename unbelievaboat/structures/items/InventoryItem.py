@@ -1,20 +1,22 @@
-from typing import Any, Dict, Optional
+from typing import TYPE_CHECKING, Any, Dict, Optional
 
 from typing_extensions import Self
 
-from ...Client import Client
 from .BaseItem import BaseItem
+
+if TYPE_CHECKING:
+    from ...Client import Client
 
 
 class InventoryItem(BaseItem):
-    def __init__(self, client: Client, data: Dict[str, Any]) -> None:
+    def __init__(self, client: "Client", data: Dict[str, Any]) -> None:
         super().__init__(data)
         self.guild_id: int = int(data.get("guild_id"))
         self.user_id: int = int(data.get("user_id"))
         self.item_id: int = int(data.get("item_id"))
         self.quantity: int = int(data.get("quantity"))
 
-        self._client: Client = client
+        self._client: "Client" = client
 
     def __str__(self) -> str:
         return "<InventoryItem item_id={} guild_id={} user_id={} quantity={} actions={} requirements={}>".format(

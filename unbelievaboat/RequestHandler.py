@@ -1,17 +1,18 @@
 import asyncio
 import re
 import time
-from typing import Any, Dict, List, Optional, Union
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Union
 
 from aiohttp import ClientResponse
 
-from .Client import Client
-from .errors import APIError, HTTPError
+if TYPE_CHECKING:
+    from .Client import Client
+    from .errors import APIError, HTTPError
 
 
 class RequestHandler:
-    def __init__(self, client: Client) -> None:
-        self._client: Client = client
+    def __init__(self, client: "Client") -> None:
+        self._client: "Client" = client
         self.locks: Dict[str, asyncio.Lock] = {}
         self.timeouts: Dict[str, float] = {}
 

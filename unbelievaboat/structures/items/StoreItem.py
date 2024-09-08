@@ -1,15 +1,17 @@
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import TYPE_CHECKING, Any, Dict, List, Optional
 
 from typing_extensions import Self
 
-from ...Client import Client
 from ...utils import MISSING
 from . import BaseItem, StoreItemAction, StoreItemRequirement
 
+if TYPE_CHECKING:
+    from ...Client import Client
+
 
 class StoreItem(BaseItem):
-    def __init__(self, client: Client, data: Dict[str, Any]) -> None:
+    def __init__(self, client: "Client", data: Dict[str, Any]) -> None:
         super().__init__(data)
         self.guild_id: int = int(data.get("guild_id"))
         self.id: int = int(data.get("id"))
@@ -23,7 +25,7 @@ class StoreItem(BaseItem):
             else None
         )
 
-        self._client: Client = client
+        self._client: "Client" = client
 
     def __str__(self) -> str:
         return "<StoreItem id={} guild_id={} price={} is_inventory={} stock_remaining={} unlimited_stock={} expires_at={} actions={} requirements={}>".format(
