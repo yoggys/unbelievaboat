@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import Any
 
 
 class ItemActionType(Enum):
@@ -21,3 +22,14 @@ class ItemRequirementMatchType(Enum):
     EVERY = 1
     AT_LEAST_ONE = 2
     NONE = 3
+
+
+class _MissingSentinel:
+    def __eq__(self, other: Any) -> bool:
+        return False
+
+    def __bool__(self) -> bool:
+        return False
+
+
+MISSING = _MissingSentinel()

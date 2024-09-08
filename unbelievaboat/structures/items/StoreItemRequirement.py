@@ -1,6 +1,6 @@
 from typing import Dict, List, Optional, Union
 
-from ...utils.Constants import ItemRequirementMatchType, ItemRequirementType
+from ...utils import ItemRequirementMatchType, ItemRequirementType
 
 
 class StoreItemRequirement:

@@ -1,6 +1,8 @@
+from .Embed import Embed
 from .Guild import Guild
 from .items import *
 from .Leaderboard import Leaderboard
+from .Message import Message
 from .Permission import Permission
 from .Store import Store
 from .UserBalance import UserBalance
@@ -18,4 +20,6 @@ __all__ = [
     "StoreItem",
     "StoreItemAction",
     "StoreItemRequirement",
+    "Message",
+    "Embed",
 ]
