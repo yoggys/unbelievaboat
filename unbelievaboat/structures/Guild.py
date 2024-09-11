@@ -61,8 +61,8 @@ class Guild:
     async def set_user_balance(
         self,
         user_id: int,
-        cash: Optional[int] = None,
-        bank: Optional[int] = None,
+        cash: int = MISSING,
+        bank: int = MISSING,
         reason: str = None,
     ) -> UserBalance:
         return await self._client.set_user_balance(
@@ -72,8 +72,8 @@ class Guild:
     async def update_user_balance(
         self,
         user_id: int,
-        cash: Optional[int] = None,
-        bank: Optional[int] = None,
+        cash: int = MISSING,
+        bank: int = MISSING,
         reason: str = None,
     ) -> UserBalance:
         return await self._client.update_user_balance(
