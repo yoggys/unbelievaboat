@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Any, Dict, Literal, Optional, Union
 
+from ..utils import MISSING
 from .items import InventoryItem, StoreItem
 from .Leaderboard import Leaderboard
 from .Permission import Permission
@@ -38,14 +39,21 @@ class Guild:
         return await self._client.get_application_permission(self.id)
 
     async def get_leaderboard(
-        self, params: Optional[Dict[str, Any]] = None
+        self,
+        sort: Literal["cash", "bank", "total"] = "total",
+        limit: int = 1000,
+        page: int = 1,
+        offset: int = 0,
     ) -> Leaderboard:
-        return await self._client.get_guild_leaderboard(self.id, params)
+        return await self._client.get_guild_leaderboard(
+            self.id, sort, limit, page, offset
+        )
 
     async def get_full_leaderboard(
-        self, params: Optional[Dict[str, Any]] = None
+        self,
+        sort: Literal["cash", "bank", "total"] = "total",
     ) -> Leaderboard:
-        return await self._client.get_full_guild_leaderboard(self.id, params)
+        return await self._client.get_full_guild_leaderboard(self.id, sort)
 
     async def get_user_balance(self, user_id: int) -> UserBalance:
         return await self._client.get_user_balance(self.id, user_id)
@@ -86,10 +94,10 @@ class Guild:
     async def get_inventory_items(
         self,
         user_id: int,
-        sort: Optional[Literal["item_id", "name", "quantity"]] = "item_id",
-        limit: Optional[int] = 100,
-        page: Optional[int] = 1,
-        query: Optional[str] = None,
+        sort: Literal["item_id", "name", "quantity"] = "item_id",
+        limit: int = 100,
+        page: int = 1,
+        query: str = MISSING,
     ) -> UserInventory:
         return await self._client.get_inventory_items(
             self.id, user_id, sort=sort, limit=limit, page=page, query=query
@@ -98,8 +106,8 @@ class Guild:
     async def get_all_inventory_items(
         self,
         user_id: int,
-        sort: Optional[Literal["item_id", "name", "quantity"]] = "item_id",
-        query: Optional[str] = None,
+        sort: Literal["item_id", "name", "quantity"] = "item_id",
+        query: str = MISSING,
     ) -> UserInventory:
         return await self._client.get_all_inventory_items(
             self.id, user_id, sort=sort, query=query

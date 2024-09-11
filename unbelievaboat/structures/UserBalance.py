@@ -2,6 +2,8 @@ from typing import TYPE_CHECKING, Any, Dict, Optional
 
 from typing_extensions import Self
 
+from ..utils import MISSING
+
 if TYPE_CHECKING:
     from ..Client import Client
 
@@ -40,7 +42,7 @@ class UserBalance:
         return self
 
     async def set(
-        self, cash: Optional[int] = None, bank: Optional[int] = None, reason: str = None
+        self, cash: int = MISSING, bank: int = MISSING, reason: str = None
     ) -> Self:
         self._update(
             await self._client.set_user_balance(
@@ -50,7 +52,7 @@ class UserBalance:
         return self
 
     async def update(
-        self, cash: Optional[int] = None, bank: Optional[int] = None, reason: str = None
+        self, cash: int = MISSING, bank: int = MISSING, reason: str = None
     ) -> Self:
         self._update(
             await self._client.update_user_balance(

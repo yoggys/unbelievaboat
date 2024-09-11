@@ -7,7 +7,7 @@ async def main() -> None:
     client = Client(...)
 
     guild_id = ...
-    pages_to_fetch = ...
+    pages_to_fetch = 5
 
     # Create a list for users
     leaderboard_users = []

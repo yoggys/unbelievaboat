@@ -38,7 +38,7 @@ class StoreItemRequirement:
         }
         if self.type in [ItemRequirementType.ROLE, ItemRequirementType.ITEM]:
             json["match_type"] = self.match_type.name
-            json["ids"] = self.ids
+            json["ids"] = [str(id) for id in self.ids]
         elif self.type == ItemRequirementType.TOTAL_BALANCE:
             json["balance"] = self.balance
         return json

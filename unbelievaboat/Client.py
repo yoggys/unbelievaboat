@@ -99,10 +99,10 @@ class Client:
     async def get_guild_leaderboard(
         self,
         guild_id: int,
-        sort: Optional[Literal["cash", "bank", "total"]] = "total",
-        limit: Optional[int] = 1000,
-        page: Optional[int] = 1,
-        offset: Optional[int] = 0,
+        sort: Literal["cash", "bank", "total"] = "total",
+        limit: int = 1000,
+        page: int = 1,
+        offset: int = 0,
     ) -> Leaderboard:
         if offset != 0 and page != 1:
             raise ValueError("Offset and page are mutually exclusive")
@@ -138,26 +138,25 @@ class Client:
     async def get_full_guild_leaderboard(
         self,
         guild_id: int,
-        sort: Optional[Literal["cash", "bank", "total"]] = "total",
+        sort: Literal["cash", "bank", "total"] = "total",
     ) -> Leaderboard:
         return await self.get_guild_leaderboard(guild_id, sort=sort, limit=2147483647)
 
     async def get_store_items(
         self,
         guild_id: int,
-        sort: Optional[
-            Literal["id", "price", "name", "stock_remaining", "expires_at"]
-        ] = "id",
-        limit: Optional[int] = 100,
-        page: Optional[int] = 1,
-        query: Optional[str] = None,
+        sort: Literal["id", "price", "name", "stock_remaining", "expires_at"] = "id",
+        limit: int = 100,
+        page: int = 1,
+        query: str = MISSING,
     ) -> Store:
         params = {
             "sort": sort,
             "limit": limit,
             "page": page,
-            "query": query,
         }
+        if query is not MISSING:
+            params["query"] = query
 
         endpoint: str = f"guilds/{guild_id}/items"
         response: Dict[str, Any] = await self._request_handler.request(
@@ -169,10 +168,8 @@ class Client:
     async def get_all_store_items(
         self,
         guild_id: int,
-        sort: Optional[
-            Literal["id", "price", "name", "stock_remaining", "expires_at"]
-        ] = "id",
-        query: Optional[str] = None,
+        sort: Literal["id", "price", "name", "stock_remaining", "expires_at"] = "id",
+        query: str = MISSING,
     ) -> Store:
         return await self.get_store_items(
             guild_id, sort=sort, query=query, limit=2147483647
@@ -188,20 +185,20 @@ class Client:
         self,
         guild_id: int,
         item_id: int,
-        name: Optional[str] = MISSING,
-        price: Optional[int] = MISSING,
-        description: Optional[str] = MISSING,
-        is_inventory: Optional[bool] = MISSING,
-        is_usable: Optional[bool] = MISSING,
-        is_sellable: Optional[bool] = MISSING,
-        stock_remaining: Optional[int] = MISSING,
-        unlimited_stock: Optional[bool] = MISSING,
-        requirements: Optional[List[StoreItemRequirement]] = MISSING,
-        actions: Optional[List[StoreItemAction]] = MISSING,
-        expires_at: Optional[datetime] = MISSING,
-        emoji_unicode: Optional[str] = MISSING,
-        emoji_id: Optional[int] = MISSING,
-        cascade_update: Optional[bool] = MISSING,
+        name: str = MISSING,
+        price: int = MISSING,
+        description: str = MISSING,
+        is_inventory: bool = MISSING,
+        is_usable: bool = MISSING,
+        is_sellable: bool = MISSING,
+        stock_remaining: int = MISSING,
+        unlimited_stock: bool = MISSING,
+        requirements: List[StoreItemRequirement] = MISSING,
+        actions: List[StoreItemAction] = MISSING,
+        expires_at: datetime = MISSING,
+        emoji_unicode: str = MISSING,
+        emoji_id: int = MISSING,
+        cascade_update: bool = False,
     ) -> StoreItem:
         data = {}
         if name is not MISSING:
@@ -236,7 +233,7 @@ class Client:
             data["emoji_id"] = emoji_id
 
         params = {
-            "cascade_update": cascade_update,
+            "cascade_update": int(cascade_update),
         }
 
         endpoint: str = f"guilds/{guild_id}/items/{item_id}"
@@ -253,19 +250,21 @@ class Client:
         cascade: bool = False,
     ) -> None:
         endpoint: str = f"guilds/{guild_id}/items/{item_id}"
-        params: Dict[str, Any] = {"cascade": cascade}
+        params: Dict[str, Any] = {"cascade": int(cascade)}
         await self._request_handler.request("DELETE", endpoint, params=params)
 
     async def get_inventory_items(
         self,
         guild_id: int,
         user_id: int,
-        sort: Optional[Literal["item_id", "name", "quantity"]] = "item_id",
-        limit: Optional[int] = 100,
-        page: Optional[int] = 1,
-        query: Optional[str] = None,
+        sort: Literal["item_id", "name", "quantity"] = "item_id",
+        limit: int = 100,
+        page: int = 1,
+        query: str = MISSING,
     ) -> UserInventory:
-        params = {"sort": sort, "limit": limit, "page": page, "query": query}
+        params = {"sort": sort, "limit": limit, "page": page}
+        if query is not MISSING:
+            params["query"] = query
 
         endpoint: str = f"guilds/{guild_id}/users/{user_id}/inventory"
         response: Dict[str, Any] = await self._request_handler.request(
@@ -279,8 +278,8 @@ class Client:
         self,
         guild_id: int,
         user_id: int,
-        sort: Optional[Literal["item_id", "name", "quantity"]] = "item_id",
-        query: Optional[str] = None,
+        sort: Literal["item_id", "name", "quantity"] = "item_id",
+        query: str = MISSING,
     ) -> UserInventory:
         return await self.get_inventory_items(
             guild_id, user_id, sort=sort, query=query, limit=2147483647
@@ -307,7 +306,7 @@ class Client:
     ) -> InventoryItem:
         endpoint: str = f"guilds/{guild_id}/users/{user_id}/inventory"
         payload: Dict[str, Any] = {
-            "item_id": item_id,
+            "item_id": str(item_id),
             "quantity": quantity,
         }
         response: Dict[str, Any] = await self._request_handler.request(
@@ -338,16 +337,19 @@ class Client:
         self,
         guild_id: int,
         user_id: int,
-        cash: Optional[int] = None,
-        bank: Optional[int] = None,
+        cash: int = MISSING,
+        bank: int = MISSING,
         reason: str = None,
     ) -> UserBalance:
         endpoint: str = f"guilds/{guild_id}/users/{user_id}"
         payload: Dict[str, Any] = {
-            "cash": cash,
-            "bank": bank,
             "reason": reason,
         }
+        if cash is not MISSING:
+            payload["cash"] = cash
+        if bank is not MISSING:
+            payload["bank"] = bank
+
         response: Dict[str, Any] = await self._request_handler.request(
             "PUT", endpoint, data=payload
         )
@@ -358,16 +360,19 @@ class Client:
         self,
         guild_id: int,
         user_id: int,
-        cash: Optional[int] = None,
-        bank: Optional[int] = None,
+        cash: int = MISSING,
+        bank: int = MISSING,
         reason: str = None,
     ) -> UserBalance:
         endpoint: str = f"guilds/{guild_id}/users/{user_id}"
         payload: Dict[str, Any] = {
-            "cash": cash,
-            "bank": bank,
             "reason": reason,
         }
+        if cash is not MISSING:
+            payload["cash"] = cash
+        if bank is not MISSING:
+            payload["bank"] = bank
+
         response: Dict[str, Any] = await self._request_handler.request(
             "PATCH", endpoint, data=payload
         )

@@ -14,9 +14,11 @@ class Message:
         **kwargs
     ) -> None:
         self.content: Optional[str] = content
-        self.embeds: Optional[List[Embed]] = [
-            embed if isinstance(embed, Embed) else Embed(**embed) for embed in embeds
-        ] or []
+        self.embeds: Optional[List[Embed]] = (
+            [embed if isinstance(embed, Embed) else Embed(**embed) for embed in embeds]
+            if embeds
+            else []
+        )
 
         if not self.embeds and not self.content:
             raise ValueError("Either content or embed must be provided")

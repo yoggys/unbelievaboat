@@ -38,7 +38,7 @@ class StoreItemAction:
         if hasattr(self, "message"):
             json["message"] = self.message.json()
         elif hasattr(self, "ids"):
-            json["ids"] = self.ids
+            json["ids"] = [str(id) for id in self.ids]
         elif hasattr(self, "balance"):
             json["balance"] = self.balance
         return json

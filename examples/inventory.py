@@ -28,6 +28,7 @@ async def main() -> None:
 
     # or just use helper function
     await inventory.clear()
+    print(inventory.items)
 
     await client.close()
 
