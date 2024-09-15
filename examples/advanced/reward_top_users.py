@@ -3,23 +3,28 @@ import asyncio
 from unbelievaboat import Client
 
 
-async def main():
+async def main() -> None:
     client = Client(...)
 
     guild_id = ...
     item_id = ...
 
-    # Fetch guild leaderboard, by default it will fetch 1000 users
-    leaderboard = await client.get_guild_leaderboard(guild_id)  # {"limit": ...}
+    # Fetch guild
+    guild = await client.get_guild(guild_id)
+
+    # Fetch leaderboard, by default it will fetch 1000 users
+    leaderboard = await guild.get_leaderboard()  # limit=1000
+    print(len(leaderboard.users))
 
     # Or fetch whole leaderboard
-    leaderboard = await client.get_guild_leaderboard_all(guild_id)
+    leaderboard = await guild.get_full_leaderboard()
+    print(len(leaderboard.users))
 
-    # Add items to the leaderboard users
-    tasks = [
-        client.add_inventory_item(guild_id, user.id, {"item_id": item_id, "quanity": 1})
-        for user in leaderboard.users
-    ]
+    # Add item & money to the leaderboard users
+    tasks = []
+    for user in leaderboard.users:
+        tasks.append(guild.add_inventory_item(user.id, item_id, 1))
+        tasks.append(user.update(cash=1000))
     await asyncio.gather(*tasks)
 
     await client.close()

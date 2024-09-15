@@ -3,7 +3,7 @@ import asyncio
 from unbelievaboat import Client
 
 
-async def main():
+async def main() -> None:
     client = Client(...)
 
     guild_id = ...
@@ -18,13 +18,17 @@ async def main():
 
     # Add each item from the store to the user inventory
     for item in store.items:
-        inventory = await inventory.add_item(item, 1)
+        await inventory.add(item, 1)
     print(inventory.items)
 
     # Remove each item from the user inventory
     while len(inventory.items) > 0:
         item = inventory.items[0]
-        inventory = await inventory.remove_item(item, item.quantity)
+        await inventory.remove(item, item.quantity)
+
+    # or just use helper function
+    await inventory.clear()
+    print(inventory.items)
 
     await client.close()
 

@@ -11,6 +11,3 @@ class HTTPError(Exception):
         self.message: str = data.get("message") or "Unknown error"
 
         self.response: aiohttp.ClientResponse = response
-
-    def __str__(self):
-        return f"HTTP Error {self.status}: {self.message}"

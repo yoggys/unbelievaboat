@@ -7,16 +7,16 @@ long_description = (cwd / "README.md").read_text()
 
 setup(
     name="unbelievaboat",
-    version="1.2.3",
+    version="2.0.0",
     author="yoggys",
-    author_email="yoggies@yoggies.ovh",
+    author_email="yoggies@yoggies.dev",
     description="Wrapper for UnbelievaBoat API.",
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/yoggys/unbelievaboat",
     packages=find_packages(),
     install_requires=[
-        "aiohttp ~= 3.8.4",
+        "aiohttp ~= 3.9.2",
         "typing_extensions ~= 4.12.2",
     ],
     classifiers=[

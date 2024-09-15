@@ -1,29 +1,27 @@
-from typing import Dict, List, Union
+from typing import Dict
 
 
 class Permission:
-    economy: int = 1
-
-    def __init__(self, allow: int) -> None:
+    def __init__(self, guild_id: int, allow: int) -> None:
+        self.guild_id: int = int(guild_id)
         self.allow: int = allow
 
     def __str__(self) -> str:
-        return "<Permission allow={}>".format(self.allow)
+        return "<Permission allow={}, economy={}, items={}>".format(
+            self.allow, self.economy, self.items
+        )
 
     @property
-    def json(self) -> Dict[str, bool]:
-        json: Dict[str, bool] = {}
-        for permission in vars(self.__class__).keys():
-            if not permission.startswith("__"):
-                json[permission] = bool(
-                    self.allow & getattr(self.__class__, permission)
-                )
-        return json
+    def id(self) -> int:
+        return self.guild_id
 
-    def has(self, permissions: Union[str, List[str]]) -> bool:
-        if isinstance(permissions, list):
-            return all(
-                bool(self.allow & getattr(self.__class__, perm)) for perm in permissions
-            )
-        else:
-            return bool(self.allow & getattr(self.__class__, permissions))
+    @property
+    def economy(self) -> bool:
+        return bool(self.allow & 0x00000001)  # (1 << 0)
+
+    @property
+    def items(self) -> bool:
+        return bool(self.allow & 0x00000002)  # (1 << 1)
+
+    def json(self) -> Dict[str, bool]:
+        return {"economy": self.economy, "items": self.items}

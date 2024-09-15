@@ -7,10 +7,6 @@
 
 This is a Python wrapper for the UnbelievaBoat API, which provides access to the UnbelievaBoat Discord bot functionality. It allows you to interact with the API endpoints to retrieve guild information, user balances, leaderboard data, and more.
 
-## Requirements
-
-- Python 3.8 or higher
-
 ## Installation
 
 You can install the UnbelievaBoat API Python wrapper using pip. Open your terminal and run the following command:
@@ -28,44 +24,45 @@ from unbelievaboat import Client
 import asyncio
 
 
-async def main():
+async def main() -> None:
     # Initialize the client with your API token
     client = Client("your-api-token")
+    
+    guild_id = ...
+    user_id = ...
 
     # Retrieve guild information
     guild = await client.get_guild(guild_id)
     print(guild)
 
     # Retrieve user balance
-    user = await client.get_user_balance(guild_id, user_id)
-    print(user.total)
-
+    user = await guild.get_user_balance(user_id)
+    print(user)
+    
     # Set or update user balance
-    user = await client.set_user_balance(guild_id, user_id, {"bank": 100})
-    user = await client.update_user_balance(guild_id, user_id, {"bank": 100})
-    # or
-    user = await client.get_user_balance(guild_id, user_id)
-    user = await user.set_balance({"bank": 100})
-    user = await user.update_balance({"bank": 100})
-
-    # Retrieve leaderboard data
-    leaderboard = await client.get_leaderboard(guild_id)
-    print(leaderboard.users)
-
-    # Retrieve item shop data
-    shop = await client.get_shop(guild_id)
-    print(shop.items)
+    await user.set(bank=100)
+    await user.update(bank=-100)
+    print(user)
 
     # Close the client session
     await client.close()
-
-
+    
+    # You can also use async context manager
+    async with Client("your-api-token") as client:
+        leaderboard = await client.get_guild_leaderboard(guild_id)
+        print(leaderboard)
+        
+        
 asyncio.run(main())
 ```
 
 Replace `"your-api-token"` with your actual API token. You can obtain an API token by logging into the UnbelievaBoat dashboard and generating a token for your bot.
 
 Please note that the above example demonstrates a basic usage scenario. You can explore other available methods in the `Client` class to interact with different API endpoints. You can also find more examples in the [examples](https://github.com/yoggys/unbelievaboat/tree/main/examples) directory. For more information about the UnbelievaBoat API (data/params), please refer to the [official documentation](https://unbelievaboat-api.readme.io/reference/).
+
+## Requirements
+
+- Python 3.8+
 
 ## Contributing
 

@@ -1,10 +1,11 @@
 from .Client import Client
 from .errors import *
 from .structures import *
+from .utils import *
 
 __all__ = [
     "Client",
-    "ApiError",
+    "APIError",
     "HTTPError",
     "Guild",
     "Permission",
@@ -17,4 +18,9 @@ __all__ = [
     "StoreItem",
     "StoreItemAction",
     "StoreItemRequirement",
+    "ItemActionType",
+    "ItemRequirementType",
+    "ItemRequirementMatchType",
+    "Message",
+    "Embed",
 ]
