@@ -181,6 +181,62 @@ class Client:
         response["guild_id"] = guild_id
         return StoreItem(self, response)
 
+    async def create_store_item(
+        self,
+        guild_id: int,
+        name: str = MISSING,
+        price: int = MISSING,
+        description: str = MISSING,
+        is_inventory: bool = MISSING,
+        is_usable: bool = MISSING,
+        is_sellable: bool = MISSING,
+        stock_remaining: int = MISSING,
+        unlimited_stock: bool = MISSING,
+        requirements: List[StoreItemRequirement] = MISSING,
+        actions: List[StoreItemAction] = MISSING,
+        expires_at: datetime = MISSING,
+        emoji_unicode: str = MISSING,
+        emoji_id: int = MISSING,
+    ) -> StoreItem:
+        data = {}
+        if name is not MISSING:
+            data["name"] = name
+        if price is not MISSING:
+            data["price"] = price
+        if description is not MISSING:
+            data["description"] = description
+        if is_inventory is not MISSING:
+            data["is_inventory"] = is_inventory
+        if is_usable is not MISSING:
+            data["is_usable"] = is_usable
+        if is_sellable is not MISSING:
+            data["is_sellable"] = is_sellable
+        if stock_remaining is not MISSING:
+            data["stock_remaining"] = stock_remaining
+        if unlimited_stock is not MISSING:
+            data["unlimited_stock"] = unlimited_stock
+        if requirements is not MISSING:
+            data["requirements"] = (
+                [requirement.json() for requirement in requirements]
+                if requirements
+                else None
+            )
+        if actions is not MISSING:
+            data["actions"] = [action.json() for action in actions] if actions else None
+        if expires_at is not MISSING:
+            data["expires_at"] = expires_at.isoformat() if expires_at else None
+        if emoji_unicode is not MISSING:
+            data["emoji_unicode"] = emoji_unicode
+        if emoji_id is not MISSING:
+            data["emoji_id"] = emoji_id
+
+        endpoint: str = f"guilds/{guild_id}/items"
+        response: Dict[str, Any] = await self._request_handler.request(
+            "POST", endpoint, data=data
+        )
+        response["guild_id"] = guild_id
+        return StoreItem(self, response)
+
     async def edit_store_item(
         self,
         guild_id: int,

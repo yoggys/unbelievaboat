@@ -52,6 +52,42 @@ class Store:
         self.items.clear()
         return self
 
+    async def create(
+        self,
+        name: str = MISSING,
+        price: int = MISSING,
+        description: str = MISSING,
+        is_inventory: bool = MISSING,
+        is_usable: bool = MISSING,
+        is_sellable: bool = MISSING,
+        stock_remaining: int = MISSING,
+        unlimited_stock: bool = MISSING,
+        requirements: List[StoreItemRequirement] = MISSING,
+        actions: List[StoreItemAction] = MISSING,
+        expires_at: datetime = MISSING,
+        emoji_unicode: str = MISSING,
+        emoji_id: int = MISSING,
+    ) -> Self:
+        self.items.append(
+            await self._client.create_store_item(
+                self.guild_id,
+                name,
+                price,
+                description,
+                is_inventory,
+                is_usable,
+                is_sellable,
+                stock_remaining,
+                unlimited_stock,
+                requirements,
+                actions,
+                expires_at,
+                emoji_unicode,
+                emoji_id,
+            )
+        )
+        return self
+
     async def edit(
         self,
         item: Union[int, StoreItem, InventoryItem],
