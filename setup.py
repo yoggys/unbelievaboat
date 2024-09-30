@@ -7,7 +7,7 @@ long_description = (cwd / "README.md").read_text()
 
 setup(
     name="unbelievaboat",
-    version="2.0.0",
+    version="2.1.0",
     author="yoggys",
     author_email="yoggies@yoggies.dev",
     description="Wrapper for UnbelievaBoat API.",
