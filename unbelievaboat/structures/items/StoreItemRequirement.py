@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Dict, List, Optional, Union
 
 from ...utils import ItemRequirementMatchType, ItemRequirementType
@@ -11,7 +13,7 @@ class StoreItemRequirement:
         match_type: Optional[Union[ItemRequirementMatchType, str, int]] = None,
         ids: Optional[List[int]] = None,
         balance: Optional[int] = None,
-        **kwargs
+        **kwargs,
     ) -> None:
         self.type: ItemRequirementType = (
             ItemRequirementType[type]

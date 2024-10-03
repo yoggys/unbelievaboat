@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Any, Dict, List, Optional, Union
 
 from ...utils import ItemActionType
@@ -12,7 +14,7 @@ class StoreItemAction:
         message: Optional[Union[Message, Dict[str, Any]]] = None,
         ids: Optional[List[int]] = None,
         balance: Optional[int] = None,
-        **kwargs
+        **kwargs,
     ) -> None:
         self.type: ItemActionType = (
             ItemActionType[type]
