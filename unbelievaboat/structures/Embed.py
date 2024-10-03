@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from datetime import datetime
 from typing import Any, Dict, List, Optional, Union
 
@@ -17,7 +19,7 @@ class Embed:
         timestamp: Optional[datetime] = None,
         image: Optional[Dict[str, str]] = None,
         thumbnail: Optional[Dict[str, str]] = None,
-        **kwargs
+        **kwargs,
     ) -> None:
         self.title: str = title
         self.description: str = description

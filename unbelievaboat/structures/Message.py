@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Any, Dict, List, Optional, Union
 
 from typing_extensions import Self
@@ -11,7 +13,7 @@ class Message:
         self,
         content: Optional[str] = None,
         embeds: Optional[List[Union[Embed, Dict[str, Any]]]] = None,
-        **kwargs
+        **kwargs,
     ) -> None:
         self.content: Optional[str] = content
         self.embeds: Optional[List[Embed]] = (
