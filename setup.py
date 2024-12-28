@@ -16,7 +16,7 @@ setup(
     url="https://github.com/yoggys/unbelievaboat",
     packages=find_packages(),
     install_requires=[
-        "aiohttp ~= 3.9.2",
+        "aiohttp >= 3.9.2,< 3.12.0",
         "typing_extensions ~= 4.12.2",
     ],
     classifiers=[
