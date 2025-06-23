@@ -9,7 +9,7 @@ setup(
     name="unbelievaboat",
     version="2.2.0",
     author="yoggys",
-    author_email="yoggies@yoggies.dev",
+    author_email="contact@yoggies.dev",
     description="Wrapper for UnbelievaBoat API.",
     long_description=long_description,
     long_description_content_type="text/markdown",
